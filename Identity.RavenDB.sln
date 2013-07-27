@@ -22,6 +22,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docs", ".docs", "{1838C59C
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{B405135A-220A-4510-B29C-A6794E950ABC}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\build.cmd = scripts\build.cmd
+		scripts\build.ps1 = scripts\build.ps1
+		scripts\Identity.RavenDB.msbuild = scripts\Identity.RavenDB.msbuild
+		scripts\Identity.RavenDB.properties = scripts\Identity.RavenDB.properties
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
