@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.20617.1 PREVIEW
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.Identity.RavenDB", "src\AspNet.Identity.RavenDB\AspNet.Identity.RavenDB.csproj", "{99BBAC24-18AF-4BBA-8074-FEE00D6035F0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B29FFC02-DADE-4870-B42C-5B43E15E57EA}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7734B739-5566-433A-B091-016C42D78CDE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.Identity.RavenDB.Tests", "tests\AspNet.Identity.RavenDB.Tests\AspNet.Identity.RavenDB.Tests.csproj", "{3C5268BE-44C9-494D-A236-F699F99D7D7C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docs", ".docs", "{1838C59C-132B-466A-9BA5-F9E1C0DF4C14}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99BBAC24-18AF-4BBA-8074-FEE00D6035F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99BBAC24-18AF-4BBA-8074-FEE00D6035F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99BBAC24-18AF-4BBA-8074-FEE00D6035F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99BBAC24-18AF-4BBA-8074-FEE00D6035F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C5268BE-44C9-494D-A236-F699F99D7D7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C5268BE-44C9-494D-A236-F699F99D7D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C5268BE-44C9-494D-A236-F699F99D7D7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C5268BE-44C9-494D-A236-F699F99D7D7C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3C5268BE-44C9-494D-A236-F699F99D7D7C} = {7734B739-5566-433A-B091-016C42D78CDE}
+	EndGlobalSection
+EndGlobal
