@@ -9,17 +9,20 @@
     <TestProjFiles Include="$(SolutionDir)\tests\**\*.csproj" />
   </ItemGroup>
 
-  <Target Name="Default" DependsOnTargets="UnitTest" />
+  <Target Name="Default" DependsOnTargets="UnitTest; Package" />
   
   <Target Name="Clean">
     <RemoveDir Directories="$(BuildArtifactsDir)" />
   </Target>
   <Target Name="Init" DependsOnTargets="Clean">
-    <MakeDir Directories="$(BuildArtifactsDir)" />
+    <MakeDir Directories="$(BuildArtifactsDir);$(NuGetPackageOutputDir)" />
   </Target>
   <Target Name="Compile" DependsOnTargets="Init">
     <MSBuild Projects="@(AppProjFiles)" Targets="Rebuild" Properties="OutDir=$(BuildArtifactsDir);Configuration=$(Configuration)" />
 	  <MSBuild Projects="@(TestProjFiles)" Targets="Rebuild" Properties="OutDir=$(BuildTestArtifactsDir);Configuration=$(Configuration)" />
+  </Target>
+  <Target Name="Package">
+    <Exec Command="$(NugetExeDir)\nuget.exe pack %(AppProjFiles.FullPath) -Build -OutputDirectory $(NuGetPackageOutputDir) -NonInteractive -Verbosity detailed" />
   </Target>
   <Target Name="UnitTest" DependsOnTargets="Compile">
     <ItemGroup>

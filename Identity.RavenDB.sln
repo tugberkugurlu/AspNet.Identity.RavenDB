@@ -27,6 +27,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{B40513
 		scripts\Identity.RavenDB.msbuild = scripts\Identity.RavenDB.msbuild
 		scripts\Identity.RavenDB.properties = scripts\Identity.RavenDB.properties
 		scripts\Identity.RavenDB.xunit.targets = scripts\Identity.RavenDB.xunit.targets
+		scripts\publish.ps1 = scripts\publish.ps1
 	EndProjectSection
 EndProject
 Global

@@ -69,6 +69,7 @@
     <Compile Include="Stores\RavenUserStore.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="AspNet.Identity.RavenDB.nuspec" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
