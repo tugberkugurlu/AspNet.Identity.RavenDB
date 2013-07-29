@@ -9,8 +9,7 @@
     <licenseUrl>https://raw.github.com/tugberkugurlu/AspNet.Identity.RavenDB/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/tugberkugurlu/AspNet.Identity.RavenDB</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>$description$</description>  
-    <copyright>Copyright 2013</copyright>
+    <description>$description$</description>
     <tags>Identity AspNet RavenDB Membership</tags>
   </metadata>
 </package>
