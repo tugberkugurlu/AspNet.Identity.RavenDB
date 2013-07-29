@@ -2,6 +2,7 @@
 using Raven.Client;
 using Raven.Client.Embedded;
 using Raven.Client.Indexes;
+using Raven.Client.Listeners;
 
 namespace AspNet.Identity.RavenDB.Tests.Stores
 {
@@ -9,17 +10,29 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
     {
         internal protected IDocumentStore CreateEmbeddableStore()
         {
-            IDocumentStore store = new EmbeddableDocumentStore
+            EmbeddableDocumentStore store = new EmbeddableDocumentStore
             {
                 Configuration =
                 {
                     RunInUnreliableYetFastModeThatIsNotSuitableForProduction = true,
                     RunInMemory = true,
                 }
-            }.Initialize();
+            };
+
+            store.Initialize();
+            store.RegisterListener(new NoStaleQueriesListener());
             IndexCreation.CreateIndexes(typeof(RavenUser_Roles).Assembly, store);
 
             return store;
+        }
+    }
+
+    // http://stackoverflow.com/questions/9181204/ravendb-how-to-flush
+    public class NoStaleQueriesListener : IDocumentQueryListener
+    {
+        public void BeforeQueryExecuted(IDocumentQueryCustomization queryCustomization)
+        {
+            queryCustomization.WaitForNonStaleResults();
         }
     }
 }
