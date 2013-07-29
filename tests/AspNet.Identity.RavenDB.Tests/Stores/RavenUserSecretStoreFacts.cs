@@ -33,5 +33,36 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 Assert.NotNull(user.Secret);
             }
         }
+
+        [Fact]
+        public async Task Find_Should_Get_The_Secret_If_User_And_Secret_Exists()
+        {
+            string userName = "Tugberk";
+            string userSecret = "1234567890qwertyuiop";
+
+            using (IDocumentStore store = CreateEmbeddableStore())
+            using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+            {
+                IUserSecretStore userSecretStore = new RavenUserSecretStore<RavenUser, UserSecret>(ses);
+                RavenUser user = new RavenUser 
+                { 
+                    Id = "RavenUsers/1", 
+                    UserName = userName,
+                    Secret = new UserSecret 
+                    {
+                        UserName = userName,
+                        Secret = userSecret
+                    }
+                };
+
+                await ses.StoreAsync(user);
+                await ses.SaveChangesAsync();
+
+                IUserSecret secret = await userSecretStore.Find(userName);
+
+                Assert.NotNull(secret);
+                Assert.Equal(userName, secret.UserName);
+            }
+        }
     }
 }

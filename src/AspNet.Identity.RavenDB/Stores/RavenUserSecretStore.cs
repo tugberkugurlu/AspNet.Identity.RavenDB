@@ -24,14 +24,8 @@ namespace AspNet.Identity.RavenDB.Stores
                 throw new ArgumentException("userName");
             }
 
-            IEnumerable<UserSecret> userSecrets = await DocumentSession.Query<TUser>()
-                .Where(user => user.UserName == userName)
-                .Take(1)
-                .Select(user => user.Secret)
-                .ToListAsync()
-                .ConfigureAwait(false);
-
-            return userSecrets.FirstOrDefault();
+            RavenUser user = await GetUserByUserName(userName).ConfigureAwait(false);
+            return user != null ? user.Secret : null;
         }
 
         public async Task<bool> Create(IUserSecret userSecret)
