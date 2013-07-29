@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>$id$</id>
     <version>$version$</version>
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
-    <licenseUrl>https://raw.github.com/tugberkugurlu/Identity.RavenDB/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/tugberkugurlu/Identity.RavenDB</projectUrl>
+    <licenseUrl>https://raw.github.com/tugberkugurlu/AspNet.Identity.RavenDB/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/tugberkugurlu/AspNet.Identity.RavenDB</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>$description$</description>  
     <copyright>Copyright 2013</copyright>

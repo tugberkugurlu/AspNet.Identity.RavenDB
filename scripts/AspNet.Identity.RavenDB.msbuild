@@ -2,7 +2,7 @@
          ToolsVersion="4.0"
          DefaultTargets="Default">
 
-  <Import Project="$(MSBuildThisFileDirectory)\Identity.RavenDB.properties"/>
+  <Import Project="$(MSBuildThisFileDirectory)\AspNet.Identity.RavenDB.properties"/>
   
   <ItemGroup>
     <AppProjFiles Include="$(SolutionDir)\src\**\*.csproj" />
@@ -29,7 +29,7 @@
       <TestDLLsXunit Include="$(BuildTestArtifactsDir)\*.Tests.dll">
         <ResultsDirectory>$(TestResultsDirectory)</ResultsDirectory>
       </TestDLLsXunit>
-      <XunitProject Include="$(ScriptToolsDir)\Identity.RavenDB.xunit.targets">
+      <XunitProject Include="$(ScriptToolsDir)\AspNet.Identity.RavenDB.xunit.targets">
         <Properties>TestAssembly=%(TestDLLsXunit.FullPath);XmlPath=%(TestDLLsXunit.ResultsDirectory)%(TestDLLsXunit.FileName)-XunitResults.xml</Properties>
       </XunitProject>
     </ItemGroup>

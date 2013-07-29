@@ -1,5 +1,5 @@
 <Project ToolsVersion="4.0" DefaultTargets="Xunit" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="$(MSBuildThisFileDirectory)\Identity.RavenDB.properties"/>
+    <Import Project="$(MSBuildThisFileDirectory)\AspNet.Identity.RavenDB.properties"/>
     <ItemGroup>
         <XunitMsBuildRunner Include="$(SolutionDir)\packages\**\xunit.runner.msbuild.dll"/>
     </ItemGroup>

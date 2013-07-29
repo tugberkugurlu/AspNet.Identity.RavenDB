@@ -1,5 +1,5 @@
 param(
-    $buildFile   = (join-path (Split-Path -parent $MyInvocation.MyCommand.Definition) "Identity.RavenDB.msbuild"),
+    $buildFile   = (join-path (Split-Path -parent $MyInvocation.MyCommand.Definition) "AspNet.Identity.RavenDB.msbuild"),
     $buildParams = "/p:Configuration=Release",
     $buildTarget = "/t:Default"
 )
