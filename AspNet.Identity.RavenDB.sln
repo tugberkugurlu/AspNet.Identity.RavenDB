@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.20617.1 PREVIEW
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.Identity.RavenDB", "src\AspNet.Identity.RavenDB\AspNet.Identity.RavenDB.csproj", "{99BBAC24-18AF-4BBA-8074-FEE00D6035F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B29FFC02-DADE-4870-B42C-5B43E15E57EA}"
@@ -26,7 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{B40513
 	ProjectSection(SolutionItems) = preProject
 		scripts\AspNet.Identity.RavenDB.msbuild = scripts\AspNet.Identity.RavenDB.msbuild
 		scripts\AspNet.Identity.RavenDB.properties = scripts\AspNet.Identity.RavenDB.properties
-		scripts\AspNet.Identity.RavenDB.targets = scripts\AspNet.Identity.RavenDB.targets
+		scripts\AspNet.Identity.RavenDB.xunit.targets = scripts\AspNet.Identity.RavenDB.xunit.targets
 		scripts\build.cmd = scripts\build.cmd
 		scripts\build.ps1 = scripts\build.ps1
 		scripts\publish.ps1 = scripts\publish.ps1
