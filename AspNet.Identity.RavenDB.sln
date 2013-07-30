@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.20617.1 PREVIEW
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.Identity.RavenDB", "src\AspNet.Identity.RavenDB\AspNet.Identity.RavenDB.csproj", "{99BBAC24-18AF-4BBA-8074-FEE00D6035F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{B29FFC02-DADE-4870-B42C-5B43E15E57EA}"
@@ -16,6 +18,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.Identity.RavenDB.Tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".docs", ".docs", "{1838C59C-132B-466A-9BA5-F9E1C0DF4C14}"
 	ProjectSection(SolutionItems) = preProject
+		How-To.md = How-To.md
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection

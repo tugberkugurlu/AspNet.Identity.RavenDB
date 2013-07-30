@@ -25,7 +25,7 @@ namespace AspNet.Identity.RavenDB.Stores
 
             TUser user = await GetUserById(userId).ConfigureAwait(false);
 
-            return user == null
+            return user == null || user.UserClaims == null
                 ? Enumerable.Empty<UserClaim>()
                 : user.UserClaims;
         }

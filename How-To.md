@@ -1,0 +1,2 @@
+ - Shape of the Id and the uniquness requirement needs to be done by the session provider.
+ - 

@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stores\RavenRoleStoreFacts.cs" />
+    <Compile Include="Stores\RavenUserClaimStoreFacts.cs" />
     <Compile Include="Stores\RavenUserLoginStoreFacts.cs" />
     <Compile Include="Stores\RavenUserSecretStoreFacts.cs" />
     <Compile Include="Stores\RavenUserStoreFacts.cs" />
