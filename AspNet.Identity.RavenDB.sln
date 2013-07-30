@@ -33,6 +33,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{B40513
 		scripts\publish.ps1 = scripts\publish.ps1
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{0BC1FF84-2F37-4F0F-8FB1-DB7609DAB85B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.Identity.RavenDB.Sample.Mvc", "samples\AspNet.Identity.RavenDB.Sample.Mvc\AspNet.Identity.RavenDB.Sample.Mvc.csproj", "{5D2B3177-7564-4B0A-B852-4A8676F0280D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,11 +51,16 @@ Global
 		{3C5268BE-44C9-494D-A236-F699F99D7D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C5268BE-44C9-494D-A236-F699F99D7D7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C5268BE-44C9-494D-A236-F699F99D7D7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D2B3177-7564-4B0A-B852-4A8676F0280D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D2B3177-7564-4B0A-B852-4A8676F0280D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D2B3177-7564-4B0A-B852-4A8676F0280D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D2B3177-7564-4B0A-B852-4A8676F0280D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3C5268BE-44C9-494D-A236-F699F99D7D7C} = {7734B739-5566-433A-B091-016C42D78CDE}
+		{5D2B3177-7564-4B0A-B852-4A8676F0280D} = {0BC1FF84-2F37-4F0F-8FB1-DB7609DAB85B}
 	EndGlobalSection
 EndGlobal
