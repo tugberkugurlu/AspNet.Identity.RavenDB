@@ -10,6 +10,7 @@ namespace AspNet.Identity.RavenDB.Sample.Mvc.Controllers
     {
         public ViewResult Index()
         {
+            var req = HttpContext;
             return View();
         }
     }
