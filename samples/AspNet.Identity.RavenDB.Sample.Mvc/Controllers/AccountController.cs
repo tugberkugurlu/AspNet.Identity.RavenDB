@@ -35,11 +35,13 @@ namespace AspNet.Identity.RavenDB.Sample.Mvc.Controllers
                 // Create a profile, password, and link the local login before signing in the user
                 RavenUser user = new RavenUser { UserName = requestModel.UserName };
                 UserSecret userSecret = new UserSecret { UserName = requestModel.UserName, Secret = requestModel.Password };
-                UserLogin login = new UserLogin { UserId = user.Id, LoginProvider = IdentityConfig.LocalLoginProvider, ProviderKey = requestModel.UserName };
+                bool userStoreResult = await _identityStoreContext.Users.Create(user);
+                bool userSecretStoreResult = await _identityStoreContext.Secrets.Create(userSecret);
 
-                if (await _identityStoreContext.Users.Create(user) &&
-                    await _identityStoreContext.Secrets.Create(userSecret) &&
-                    await _identityStoreContext.Logins.Add(login))
+                UserLogin login = new UserLogin { UserId = user.Id, LoginProvider = IdentityConfig.LocalLoginProvider, ProviderKey = requestModel.UserName };
+                bool userLoginStoreResult = await _identityStoreContext.Logins.Add(login);
+
+                if (userStoreResult && userSecretStoreResult && userLoginStoreResult)
                 {
                     await _identityStoreContext.SaveChanges();
                     await InternalSignIn(user.Id, isPersistent: false);
