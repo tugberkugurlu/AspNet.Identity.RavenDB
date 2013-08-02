@@ -24,8 +24,8 @@ namespace AspNet.Identity.RavenDB.Stores
                 throw new ArgumentException("userName");
             }
 
-            RavenUser user = await GetUserByUserName(userName).ConfigureAwait(false);
-            return user != null ? user.Secret : null;
+            IUserSecret secret = await GetSecret(userName);
+            return secret;
         }
 
         public async Task<bool> Create(IUserSecret userSecret)
@@ -37,16 +37,16 @@ namespace AspNet.Identity.RavenDB.Stores
 
             bool result;
             TUserSecret tUserSecret = userSecret as TUserSecret;
-            TUser user = await GetUserByUserName(userSecret.UserName).ConfigureAwait(false);
+            IUserSecret existingSecret = await GetSecret(userSecret.UserName).ConfigureAwait(false);
 
-			if (tUserSecret == null || user == null || user.Secret != null)
-			{
-				result = false;
-			}
+            if (tUserSecret == null || existingSecret != null)
+            {
+                result = false;
+            }
             else
             {
                 tUserSecret.Secret = Crypto.HashPassword(tUserSecret.Secret);
-                user.Secret = tUserSecret;
+                await DocumentSession.StoreAsync(tUserSecret).ConfigureAwait(false);
                 result = true;
             }
 
@@ -66,11 +66,11 @@ namespace AspNet.Identity.RavenDB.Stores
             }
 
             bool result;
-            TUser user = await GetUserByUserName(userName).ConfigureAwait(false);
-			
-			if (user != null && user.Secret != null)
+            IUserSecret existingSecret = await GetSecret(userName).ConfigureAwait(false);
+
+            if (existingSecret != null)
 			{
-				user.Secret.Secret = Crypto.HashPassword(newSecret);
+                existingSecret.Secret = Crypto.HashPassword(newSecret);
 				result = true;
 			}
 			else
@@ -89,11 +89,11 @@ namespace AspNet.Identity.RavenDB.Stores
             }
 
             bool result;
-            TUser user = await GetUserByUserName(userName).ConfigureAwait(false);
+            TUserSecret existingSecret = await GetSecret(userName).ConfigureAwait(false);
 
-            if (user != null && user.Secret != null)
+            if (existingSecret != null)
             {
-                user.Secret = null;
+                DocumentSession.Delete<TUserSecret>(existingSecret);
                 result = true;
             }
             else
@@ -117,10 +117,11 @@ namespace AspNet.Identity.RavenDB.Stores
             }
 
             bool result;
-            TUser user = await GetUserByUserName(userName).ConfigureAwait(false);
-            if (user != null && user.Secret != null)
+            IUserSecret existingSecret = await GetSecret(userName).ConfigureAwait(false);
+
+            if (existingSecret != null)
             {
-                result = Crypto.VerifyHashedPassword(user.Secret.Secret, loginSecret);
+                result = Crypto.VerifyHashedPassword(existingSecret.Secret, loginSecret);
             }
             else
             {
@@ -128,6 +129,19 @@ namespace AspNet.Identity.RavenDB.Stores
             }
 
             return result;
+        }
+
+        // privates
+
+        private async Task<TUserSecret> GetSecret(string userName)
+        {
+            IEnumerable<TUserSecret> secrets = await DocumentSession
+                .Query<TUserSecret>()
+                .Where(secret => secret.UserName == userName)
+                .Take(1)
+                .ToListAsync().ConfigureAwait(false);
+
+            return secrets.FirstOrDefault();
         }
     }
 }

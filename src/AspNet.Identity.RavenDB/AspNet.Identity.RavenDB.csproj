@@ -7,7 +7,7 @@
     <ProjectGuid>{99BBAC24-18AF-4BBA-8074-FEE00D6035F0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AspNet.Identity.RavenDB</RootNamespace>
+    <RootNamespace>AspNet.Identity.RavenDB.Entities</RootNamespace>
     <AssemblyName>AspNet.Identity.RavenDB</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -66,7 +66,7 @@
     <Compile Include="Entities\UserSecret.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RavenIdentityStoreContext.cs" />
-    <Compile Include="RavenUser.cs" />
+    <Compile Include="Entities\RavenUser.cs" />
     <Compile Include="Stores\RavenUserStore.cs" />
   </ItemGroup>
   <ItemGroup>

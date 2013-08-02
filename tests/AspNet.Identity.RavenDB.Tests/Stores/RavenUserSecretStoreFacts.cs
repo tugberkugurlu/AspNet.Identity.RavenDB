@@ -3,14 +3,16 @@ using AspNet.Identity.RavenDB.Stores;
 using AspNet.Identity.RavenDB.Utils;
 using Microsoft.AspNet.Identity;
 using Raven.Client;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
+using System.Linq;
 
 namespace AspNet.Identity.RavenDB.Tests.Stores
 {
     public class RavenUserSecretStoreFacts : TestBase
     {
-        [Fact(Skip = "Issue #1 blocks this test")]
+        [Fact]
         public async Task Create_Should_Create_Secret_If_User_Exists_And_Secret_Does_Not()
         {
             string userName = "Tugberk";
@@ -24,10 +26,10 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 bool result = await userSecretStore.Create(new UserSecret { UserName = userName, Secret = userSecret });
                 await ses.SaveChangesAsync();
 
-                RavenUser user = await ses.LoadAsync<RavenUser>("RavenUsers/1");
+                UserSecret secret = await GetSecret(ses, userName);
 
                 Assert.True(result);
-                Assert.NotNull(user.Secret);
+                Assert.NotNull(secret.Secret);
             }
         }
 
@@ -45,21 +47,23 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 RavenUser user = new RavenUser 
                 { 
                     Id = "RavenUsers/1", 
-                    UserName = userName,
-                    Secret = new UserSecret 
-                    {
-                        UserName = userName,
-                        Secret = hashedUserSecret
-                    }
+                    UserName = userName
                 };
 
+                UserSecret secret = new UserSecret
+                {
+                    UserName = userName,
+                    Secret = hashedUserSecret
+                };
+
+                await ses.StoreAsync(secret);
                 await ses.StoreAsync(user);
                 await ses.SaveChangesAsync();
 
-                IUserSecret secret = await userSecretStore.Find(userName);
+                IUserSecret secretToFind = await userSecretStore.Find(userName);
 
-                Assert.NotNull(secret);
-                Assert.Equal(userName, secret.UserName);
+                Assert.NotNull(secretToFind);
+                Assert.Equal(userName, secretToFind.UserName);
             }
         }
 
@@ -79,14 +83,16 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 RavenUser user = new RavenUser
                 {
                     Id = "RavenUsers/1",
-                    UserName = userName,
-                    Secret = new UserSecret
-                    {
-                        UserName = userName,
-                        Secret = hashedUserSecret
-                    }
+                    UserName = userName
                 };
 
+                UserSecret secret = new UserSecret
+                {
+                    UserName = userName,
+                    Secret = hashedUserSecret
+                };
+
+                await ses.StoreAsync(secret);
                 await ses.StoreAsync(user);
                 await ses.SaveChangesAsync();
 
@@ -97,7 +103,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 // Assert
                 Assert.True(result);
                 Assert.True(Crypto.VerifyHashedPassword(
-                    (await ses.LoadAsync<RavenUser>("RavenUsers/1")).Secret.Secret, newUserSecret));
+                    (await GetSecret(ses, userName)).Secret, newUserSecret));
             }
         }
 
@@ -116,14 +122,16 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 RavenUser user = new RavenUser
                 {
                     Id = "RavenUsers/1",
-                    UserName = userName,
-                    Secret = new UserSecret
-                    {
-                        UserName = userName,
-                        Secret = hashedUserSecret
-                    }
+                    UserName = userName
                 };
 
+                UserSecret secret = new UserSecret
+                {
+                    UserName = userName,
+                    Secret = hashedUserSecret
+                };
+
+                await ses.StoreAsync(secret);
                 await ses.StoreAsync(user);
                 await ses.SaveChangesAsync();
 
@@ -133,6 +141,8 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
 
                 // Assert
                 Assert.False(result);
+                Assert.True(Crypto.VerifyHashedPassword(
+                    (await GetSecret(ses, userName)).Secret, userSecret));
             }
         }
 
@@ -150,14 +160,16 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 RavenUser user = new RavenUser
                 {
                     Id = "RavenUsers/1",
-                    UserName = userName,
-                    Secret = new UserSecret
-                    {
-                        UserName = userName,
-                        Secret = hashedUserSecret
-                    }
+                    UserName = userName
                 };
 
+                UserSecret secret = new UserSecret
+                {
+                    UserName = userName,
+                    Secret = hashedUserSecret
+                };
+
+                await ses.StoreAsync(secret);
                 await ses.StoreAsync(user);
                 await ses.SaveChangesAsync();
 
@@ -167,7 +179,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
 
                 // Assert
                 Assert.True(result);
-                Assert.Null((await ses.LoadAsync<RavenUser>("RavenUsers/1")).Secret);
+                Assert.Null((await GetSecret(ses, userName)));
             }
         }
 
@@ -185,14 +197,16 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 RavenUser user = new RavenUser
                 {
                     Id = "RavenUsers/1",
-                    UserName = userName,
-                    Secret = new UserSecret
-                    {
-                        UserName = userName,
-                        Secret = hashedUserSecret
-                    }
+                    UserName = userName
                 };
 
+                UserSecret secret = new UserSecret
+                {
+                    UserName = userName,
+                    Secret = hashedUserSecret
+                };
+
+                await ses.StoreAsync(secret);
                 await ses.StoreAsync(user);
                 await ses.SaveChangesAsync();
 
@@ -202,6 +216,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
 
                 // Assert
                 Assert.False(result);
+                Assert.NotNull((await GetSecret(ses, userName)));
             }
         }
 
@@ -219,14 +234,16 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 RavenUser user = new RavenUser
                 {
                     Id = "RavenUsers/1",
-                    UserName = userName,
-                    Secret = new UserSecret
-                    {
-                        UserName = userName,
-                        Secret = hashedUserSecret
-                    }
+                    UserName = userName
                 };
 
+                UserSecret secret = new UserSecret
+                {
+                    UserName = userName,
+                    Secret = hashedUserSecret
+                };
+
+                await ses.StoreAsync(secret);
                 await ses.StoreAsync(user);
                 await ses.SaveChangesAsync();
 
@@ -253,14 +270,16 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 RavenUser user = new RavenUser
                 {
                     Id = "RavenUsers/1",
-                    UserName = userName,
-                    Secret = new UserSecret
-                    {
-                        UserName = userName,
-                        Secret = hashedUserSecret
-                    }
+                    UserName = userName
                 };
 
+                UserSecret secret = new UserSecret
+                {
+                    UserName = userName,
+                    Secret = hashedUserSecret
+                };
+
+                await ses.StoreAsync(secret);
                 await ses.StoreAsync(user);
                 await ses.SaveChangesAsync();
 
@@ -287,14 +306,16 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 RavenUser user = new RavenUser
                 {
                     Id = "RavenUsers/1",
-                    UserName = userName,
-                    Secret = new UserSecret
-                    {
-                        UserName = userName,
-                        Secret = hashedUserSecret
-                    }
+                    UserName = userName
                 };
 
+                UserSecret secret = new UserSecret
+                {
+                    UserName = userName,
+                    Secret = hashedUserSecret
+                };
+
+                await ses.StoreAsync(secret);
                 await ses.StoreAsync(user);
                 await ses.SaveChangesAsync();
 
@@ -305,6 +326,19 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 // Assert
                 Assert.False(result);
             }
+        }
+
+        // privates
+
+        private async Task<UserSecret> GetSecret(IAsyncDocumentSession ses, string userName)
+        {
+            IEnumerable<UserSecret> secrets = await ses
+                .Query<UserSecret>()
+                .Where(secret => secret.UserName == userName)
+                .Take(1)
+                .ToListAsync().ConfigureAwait(false);
+
+            return secrets.FirstOrDefault();
         }
     }
 }

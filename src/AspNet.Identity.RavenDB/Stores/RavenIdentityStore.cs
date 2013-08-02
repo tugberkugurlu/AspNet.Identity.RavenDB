@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using AspNet.Identity.RavenDB.Entities;
 
 namespace AspNet.Identity.RavenDB.Stores
 {

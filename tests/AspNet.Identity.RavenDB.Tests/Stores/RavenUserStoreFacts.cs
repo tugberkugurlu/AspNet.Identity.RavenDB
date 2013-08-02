@@ -1,4 +1,5 @@
-﻿using AspNet.Identity.RavenDB.Stores;
+﻿using AspNet.Identity.RavenDB.Entities;
+using AspNet.Identity.RavenDB.Stores;
 using Microsoft.AspNet.Identity;
 using Raven.Client;
 using Raven.Client.Embedded;

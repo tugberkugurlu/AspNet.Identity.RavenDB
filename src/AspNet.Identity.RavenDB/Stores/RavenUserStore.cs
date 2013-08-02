@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using AspNet.Identity.RavenDB.Entities;
+using Microsoft.AspNet.Identity;
 using Raven.Client;
 using System;
 using System.Collections.Generic;

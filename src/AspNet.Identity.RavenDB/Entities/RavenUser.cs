@@ -1,8 +1,7 @@
-﻿using AspNet.Identity.RavenDB.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace AspNet.Identity.RavenDB
+namespace AspNet.Identity.RavenDB.Entities
 {
     public class RavenUser : User
     {
@@ -13,7 +12,6 @@ namespace AspNet.Identity.RavenDB
             UserLogins = new Collection<UserLogin>();
         }
 
-        public UserSecret Secret { get; set; }
         public ICollection<Role> Roles { get; set; }
         public ICollection<UserClaim> UserClaims { get; set; }
         public ICollection<UserLogin> UserLogins { get; set; }
