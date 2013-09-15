@@ -21,10 +21,10 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IRoleStore roleStore = new RavenRoleStore<RavenUser, Role>(ses);
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<Role> { new Role { Id = "Admin" }, new Role { Id = "Guest" } } });
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/2", UserName = "Tugberk2", Roles = new List<Role> { new Role { Id = "Admin" } } });
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/3", UserName = "Tugberk3", Roles = new List<Role> { new Role { Id = "Guest" } } });
+                IRoleStore roleStore = new RavenRoleStore<RavenUser, RavenUserRole>(ses);
+                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Admin" }, new RavenUserRole { Id = "Guest" } } });
+                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/2", UserName = "Tugberk2", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Admin" } } });
+                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/3", UserName = "Tugberk3", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Guest" } } });
                 await ses.SaveChangesAsync();
 
                 IEnumerable<string> roles = await roleStore.GetRolesForUser("RavenUsers/1");
@@ -41,7 +41,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IRoleStore roleStore = new RavenRoleStore<RavenUser, Role>(ses);
+                IRoleStore roleStore = new RavenRoleStore<RavenUser, RavenUserRole>(ses);
                 await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk" });
                 await ses.SaveChangesAsync();
 
@@ -57,8 +57,8 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IRoleStore roleStore = new RavenRoleStore<RavenUser, Role>(ses);
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<Role> { new Role { Id = "Admin" }, new Role { Id = "Guest" } } });
+                IRoleStore roleStore = new RavenRoleStore<RavenUser, RavenUserRole>(ses);
+                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Admin" }, new RavenUserRole { Id = "Guest" } } });
                 await ses.SaveChangesAsync();
 
                 IEnumerable<string> roles = await roleStore.GetRolesForUser("RavenUsers/2");
@@ -75,8 +75,8 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IRoleStore roleStore = new RavenRoleStore<RavenUser, Role>(ses);
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<Role> { new Role { Id = "Admin" }, new Role { Id = "Guest" } } });
+                IRoleStore roleStore = new RavenRoleStore<RavenUser, RavenUserRole>(ses);
+                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Admin" }, new RavenUserRole { Id = "Guest" } } });
                 await ses.SaveChangesAsync();
 
                 bool isAdmin = await roleStore.IsUserInRole("RavenUsers/1", "Admin");
@@ -91,8 +91,8 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IRoleStore roleStore = new RavenRoleStore<RavenUser, Role>(ses);
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<Role> { new Role { Id = "Admin" }, new Role { Id = "Guest" } } });
+                IRoleStore roleStore = new RavenRoleStore<RavenUser, RavenUserRole>(ses);
+                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Admin" }, new RavenUserRole { Id = "Guest" } } });
                 await ses.SaveChangesAsync();
 
                 bool isSalesGuy = await roleStore.IsUserInRole("RavenUsers/1", "SalesGuy");
@@ -107,8 +107,8 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IRoleStore roleStore = new RavenRoleStore<RavenUser, Role>(ses);
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<Role> { new Role { Id = "Admin" }, new Role { Id = "Guest" } } });
+                IRoleStore roleStore = new RavenRoleStore<RavenUser, RavenUserRole>(ses);
+                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Admin" }, new RavenUserRole { Id = "Guest" } } });
                 await ses.SaveChangesAsync();
 
                 bool isAdmin = await roleStore.IsUserInRole("RavenUsers/2", "Admin");
@@ -125,10 +125,10 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using(IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IRoleStore roleStore = new RavenRoleStore<RavenUser, Role>(ses);
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<Role> { new Role { Id = "Admin" }, new Role { Id = "Guest" } } });
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/2", UserName = "Tugberk2", Roles = new List<Role> { new Role { Id = "Admin" } } });
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/3", UserName = "Tugberk3", Roles = new List<Role> { new Role { Id = "Guest" } } });
+                IRoleStore roleStore = new RavenRoleStore<RavenUser, RavenUserRole>(ses);
+                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Admin" }, new RavenUserRole { Id = "Guest" } } });
+                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/2", UserName = "Tugberk2", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Admin" } } });
+                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/3", UserName = "Tugberk3", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Guest" } } });
                 await ses.SaveChangesAsync();
 
                 IEnumerable<string> users = await roleStore.GetUsersInRoles("Admin");
@@ -145,10 +145,10 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IRoleStore roleStore = new RavenRoleStore<RavenUser, Role>(ses);
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<Role> { new Role { Id = "Admin" }, new Role { Id = "Guest" } } });
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/2", UserName = "Tugberk2", Roles = new List<Role> { new Role { Id = "Admin" } } });
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/3", UserName = "Tugberk3", Roles = new List<Role> { new Role { Id = "Guest" } } });
+                IRoleStore roleStore = new RavenRoleStore<RavenUser, RavenUserRole>(ses);
+                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Admin" }, new RavenUserRole { Id = "Guest" } } });
+                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/2", UserName = "Tugberk2", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Admin" } } });
+                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/3", UserName = "Tugberk3", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Guest" } } });
                 await ses.SaveChangesAsync();
 
                 IEnumerable<string> users = await roleStore.GetUsersInRoles("Sales");
@@ -164,7 +164,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IRoleStore roleStore = new RavenRoleStore<RavenUser, Role>(ses);
+                IRoleStore roleStore = new RavenRoleStore<RavenUser, RavenUserRole>(ses);
 
                 Assert.Throws<ArgumentException>(() => 
                 {
@@ -186,7 +186,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IRoleStore roleStore = new RavenRoleStore<RavenUser, Role>(ses);
+                IRoleStore roleStore = new RavenRoleStore<RavenUser, RavenUserRole>(ses);
 
                 Assert.Throws<ArgumentException>(() =>
                 {
@@ -208,7 +208,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IRoleStore roleStore = new RavenRoleStore<RavenUser, Role>(ses);
+                IRoleStore roleStore = new RavenRoleStore<RavenUser, RavenUserRole>(ses);
 
                 Assert.Throws<ArgumentException>(() =>
                 {
@@ -232,8 +232,8 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IRoleStore roleStore = new RavenRoleStore<RavenUser, Role>(ses);
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<Role> { new Role { Id = "Admin" }, new Role { Id = "Guest" } } });
+                IRoleStore roleStore = new RavenRoleStore<RavenUser, RavenUserRole>(ses);
+                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Admin" }, new RavenUserRole { Id = "Guest" } } });
                 await ses.SaveChangesAsync();
 
                 bool result = await roleStore.AddUserToRole("Sales", "RavenUsers/1");
@@ -251,8 +251,8 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IRoleStore roleStore = new RavenRoleStore<RavenUser, Role>(ses);
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<Role> { new Role { Id = "Admin" }, new Role { Id = "Guest" } } });
+                IRoleStore roleStore = new RavenRoleStore<RavenUser, RavenUserRole>(ses);
+                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = "Tugberk", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Admin" }, new RavenUserRole { Id = "Guest" } } });
                 await ses.SaveChangesAsync();
 
                 bool result = await roleStore.AddUserToRole("Sales", "RavenUsers/1");
@@ -271,9 +271,9 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         // privates
         private static async Task AddUsers(IAsyncDocumentSession ses)
         {
-            await ses.StoreAsync(new RavenUser { UserName = "Tugberk", Roles = new List<Role> { new Role { Id = "Admin" }, new Role { Id = "Guest" } } });
-            await ses.StoreAsync(new RavenUser { UserName = "Tugberk2", Roles = new List<Role> { new Role { Id = "Admin" } } });
-            await ses.StoreAsync(new RavenUser { UserName = "Tugberk2", Roles = new List<Role> { new Role { Id = "Guest" } } });
+            await ses.StoreAsync(new RavenUser { UserName = "Tugberk", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Admin" }, new RavenUserRole { Id = "Guest" } } });
+            await ses.StoreAsync(new RavenUser { UserName = "Tugberk2", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Admin" } } });
+            await ses.StoreAsync(new RavenUser { UserName = "Tugberk2", Roles = new List<RavenUserRole> { new RavenUserRole { Id = "Guest" } } });
             await ses.SaveChangesAsync();
         }
     }

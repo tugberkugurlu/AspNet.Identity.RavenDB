@@ -1,17 +1,18 @@
-﻿using Raven.Client;
+﻿using AspNet.Identity.RavenDB.Entities;
+using Raven.Client;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
-using AspNet.Identity.RavenDB.Entities;
+using System.Threading.Tasks;
 
 namespace AspNet.Identity.RavenDB.Stores
 {
-    public abstract class RavenIdentityStore<TUser> where TUser : RavenUser
+    public abstract class RavenIdentityStore<TUser> : IDisposable where TUser : RavenUser
     {
+        private readonly bool _disposeDocumentSession;
         protected readonly IAsyncDocumentSession DocumentSession;
 
-        internal protected RavenIdentityStore(IAsyncDocumentSession documentSession)
+        public RavenIdentityStore(IAsyncDocumentSession documentSession, bool disposeDocumentSession)
         {
             if (documentSession == null)
             {
@@ -19,14 +20,15 @@ namespace AspNet.Identity.RavenDB.Stores
             }
 
             DocumentSession = documentSession;
+            _disposeDocumentSession = disposeDocumentSession;
         }
 
-        internal protected async Task<TUser> GetUserById(string userId)
+        protected Task<TUser> GetUser(string id)
         {
-            return await DocumentSession.LoadAsync<TUser>(userId).ConfigureAwait(false);
+            return DocumentSession.LoadAsync<TUser>(id);
         }
 
-        internal protected async Task<TUser> GetUserByUserName(string userName)
+        protected async Task<TUser> GetUserByUserName(string userName)
         {
             IEnumerable<TUser> users = await DocumentSession.Query<TUser>()
                 .Where(user => user.UserName == userName)
@@ -35,6 +37,20 @@ namespace AspNet.Identity.RavenDB.Stores
                 .ConfigureAwait(false);
 
             return users.FirstOrDefault();
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (_disposeDocumentSession && disposing && DocumentSession != null)
+            {
+                DocumentSession.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

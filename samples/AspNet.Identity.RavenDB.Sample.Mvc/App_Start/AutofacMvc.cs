@@ -1,7 +1,5 @@
-﻿using AspNet.Identity.RavenDB.Indexes;
-using Autofac;
+﻿using Autofac;
 using Autofac.Integration.Mvc;
-using Microsoft.AspNet.Identity;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Extensions;
@@ -32,14 +30,14 @@ namespace AspNet.Identity.RavenDB.Sample.Mvc
                 }.Initialize();
 
                 store.DatabaseCommands.EnsureDatabaseExists(DefaultDatabase);
-                IndexCreation.CreateIndexes(typeof(RavenUser_Roles).Assembly, store);
+                // IndexCreation.CreateIndexes(typeof(RavenUser_Roles).Assembly, store);
 
                 return store;
 
             }).As<IDocumentStore>().SingleInstance();
 
             builder.Register(c => c.Resolve<IDocumentStore>().OpenAsyncSession()).As<IAsyncDocumentSession>().InstancePerHttpRequest();
-            builder.RegisterType<RavenIdentityStoreContext>().As<IIdentityStoreContext>().InstancePerHttpRequest();
+            // builder.RegisterType<RavenIdentityStoreContext>().As<IIdentityStoreContext>().InstancePerHttpRequest();
 
             return builder.Build();
         }

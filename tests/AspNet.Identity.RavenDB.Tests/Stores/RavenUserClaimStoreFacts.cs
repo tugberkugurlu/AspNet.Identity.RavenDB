@@ -22,15 +22,15 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IUserClaimStore userClaimStore = new RavenUserClaimStore<RavenUser, UserClaim>(ses);
+                IUserClaimStore userClaimStore = new RavenUserClaimStore<RavenUser, RavenUserClaim>(ses);
                 RavenUser user = new RavenUser
                 {
                     Id = userId,
                     UserName = userName,
-                    UserClaims = new List<UserClaim>
+                    Claims = new List<RavenUserClaim>
                     {
-                        new UserClaim { UserId = userId, ClaimType = "Scope", ClaimValue = "Read" },
-                        new UserClaim { UserId = userId, ClaimType = "Scope", ClaimValue = "Write" }
+                        new RavenUserClaim { UserId = userId, ClaimType = "Scope", ClaimValue = "Read" },
+                        new RavenUserClaim { UserId = userId, ClaimType = "Scope", ClaimValue = "Write" }
                     }
                 };
 
@@ -54,7 +54,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IUserClaimStore userClaimStore = new RavenUserClaimStore<RavenUser, UserClaim>(ses);
+                IUserClaimStore userClaimStore = new RavenUserClaimStore<RavenUser, RavenUserClaim>(ses);
                 RavenUser user = new RavenUser
                 {
                     Id = userId,
@@ -81,7 +81,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IUserClaimStore userClaimStore = new RavenUserClaimStore<RavenUser, UserClaim>(ses);
+                IUserClaimStore userClaimStore = new RavenUserClaimStore<RavenUser, RavenUserClaim>(ses);
                 RavenUser user = new RavenUser
                 {
                     Id = userId,

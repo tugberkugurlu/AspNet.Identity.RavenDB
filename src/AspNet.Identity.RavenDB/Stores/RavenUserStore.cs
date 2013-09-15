@@ -4,35 +4,91 @@ using Raven.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace AspNet.Identity.RavenDB.Stores
 {
-    public class RavenUserStore<TUser> : RavenIdentityStore<TUser>, IUserStore where TUser : RavenUser
+    public sealed class RavenUserStore<TUser> : RavenIdentityStore<TUser>, IUserStore<TUser>, IUserLoginStore<TUser>, IUserClaimStore<TUser> where TUser : RavenUser
     {
-        public RavenUserStore(IAsyncDocumentSession documentSession) : base(documentSession)
+        public RavenUserStore(IAsyncDocumentSession documentSession) : this(documentSession, true)
         {
         }
 
-        public async Task<IUser> Find(string userId)
+        public RavenUserStore(IAsyncDocumentSession documentSession, bool disposeDocumentSession) : base(documentSession, disposeDocumentSession)
+        {
+        }
+
+        // IUserStore
+
+        /// <summary>
+        /// </summary>
+        /// <remarks>
+        /// This method doesn't perform uniquness. That's the responsibility of the session provider.
+        /// </remarks>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public async Task CreateAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            await DocumentSession.StoreAsync(user).ConfigureAwait(false);
+            await DocumentSession.SaveChangesAsync();
+        }
+
+        public Task<TUser> FindByIdAsync(string userId)
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
-                throw new ArgumentException("userId");
+                throw new ArgumentException("Input cannot be null, empty or white space", "userId");
             }
 
-            return await DocumentSession.LoadAsync<TUser>(userId).ConfigureAwait(false);
+            return GetUser(userId);
         }
 
-        public async Task<IUser> FindByUserName(string userName)
+        public Task<TUser> FindByNameAsync(string userName)
         {
             if (string.IsNullOrWhiteSpace(userName))
             {
-                throw new ArgumentException("userName");
+                throw new ArgumentException("Input cannot be null, empty or white space", "userName");
             }
 
+            return GetUserByUserName(userName);
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <remarks>
+        /// This method assumes that incomming TUser parameter is tracked in the session. So, this method literally behaves as SaveChangeAsync
+        /// </remarks>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public Task UpdateAsync(TUser user)
+        {
+            return DocumentSession.SaveChangesAsync();
+        }
+
+        // IUserLoginStore
+
+        public Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult<IList<UserLoginInfo>>(
+                user.Logins.Select(login => new UserLoginInfo(login.LoginProvider, login.ProviderKey)).ToList()
+            );
+        }
+
+        public async Task<TUser> FindAsync(UserLoginInfo login)
+        {
             IEnumerable<TUser> users = await DocumentSession.Query<TUser>()
-                .Where(usr => usr.UserName == userName)
+                .Where(usr => usr.Logins.Any(lgn => lgn.LoginProvider == login.LoginProvider && lgn.ProviderKey == login.ProviderKey))
                 .Take(1)
                 .ToListAsync()
                 .ConfigureAwait(false);
@@ -40,53 +96,85 @@ namespace AspNet.Identity.RavenDB.Stores
             return users.FirstOrDefault();
         }
 
-        public async Task<bool> Create(IUser user)
+        public Task AddLoginAsync(TUser user, UserLoginInfo login)
         {
             if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
-
-            if (string.IsNullOrWhiteSpace(user.UserName))
+            if (login == null)
             {
-                throw new ArgumentException("user.UserName");
+                throw new ArgumentNullException("login");
             }
 
-            bool result;
-            TUser tUser = user as TUser;
-            if (tUser == null)
-            {
-                result = false;
-            }
-            else
-            {
-                // TODO: This's poor man's uniqueness constraint and not safe. Find a better way.
-                TUser existingUser = await GetUserByUserName(user.UserName);
-                if (existingUser != null)
-                {
-                    result = false;
-                }
-                else
-                {
-                    await DocumentSession.StoreAsync(tUser).ConfigureAwait(false);
-                    result = true;
-                }
-            }
-
-            return result;
+            user.Logins.Add(new RavenUserLogin(login));
+            return Task.FromResult(0);
         }
 
-        public async Task<bool> Delete(string userId)
+        public Task RemoveLoginAsync(TUser user, UserLoginInfo login)
         {
-            IUser user = await Find(userId).ConfigureAwait(false);
-            TUser tUser = user as TUser;
-            if (tUser == null)
+            if (user == null)
             {
-                return false;
+                throw new ArgumentNullException("user");
+            }
+            if (login == null)
+            {
+                throw new ArgumentNullException("login");
             }
 
-            DocumentSession.Delete<TUser>(tUser);
-            return true;
+            RavenUserLogin userLogin = user.Logins
+                .FirstOrDefault(lgn => lgn.LoginProvider == login.LoginProvider && lgn.ProviderKey == login.ProviderKey);
+
+            if (userLogin != null)
+            {
+                user.Logins.Remove(userLogin);
+            }
+
+            return Task.FromResult(0);
+        }
+
+        // IUserClaimStore
+
+        public Task<IList<Claim>> GetClaimsAsync(TUser user)
+        {
+            return Task.FromResult<IList<Claim>>(user.Claims.Select(clm => new Claim(clm.ClaimType, clm.ClaimValue)).ToList());
+        }
+
+        public Task AddClaimAsync(TUser user, Claim claim)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+            if (claim == null)
+            {
+                throw new ArgumentNullException("claim");
+            }
+
+            user.Claims.Add(new RavenUserClaim(claim));
+            return Task.FromResult(0);
+        }
+
+        public Task RemoveClaimAsync(TUser user, Claim claim)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+            if (claim == null)
+            {
+                throw new ArgumentNullException("claim");
+            }
+
+            RavenUserClaim userClaim = user.Claims
+                .FirstOrDefault(clm => clm.ClaimType == claim.Type && clm.ClaimValue == claim.Value);
+
+            if (userClaim != null)
+            {
+                user.Claims.Remove(userClaim);
+            }
+
+            return Task.FromResult(0);
         }
     }
 }

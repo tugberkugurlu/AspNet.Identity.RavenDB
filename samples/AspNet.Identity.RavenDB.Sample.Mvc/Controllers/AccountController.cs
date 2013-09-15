@@ -13,11 +13,11 @@ namespace AspNet.Identity.RavenDB.Sample.Mvc.Controllers
 {
     public class AccountController : OwinController
     {
-        private readonly IIdentityStoreContext _identityStoreContext;
+        private readonly UserManager<RavenUser> _userManager;
 
-        public AccountController(IIdentityStoreContext identityStoreContext)
+        public AccountController(UserManager<RavenUser> userManager)
         {
-            _identityStoreContext = identityStoreContext;
+            _userManager = userManager;
         }
 
         [HttpGet]
@@ -34,22 +34,22 @@ namespace AspNet.Identity.RavenDB.Sample.Mvc.Controllers
             {
                 // Create a profile, password, and link the local login before signing in the user
                 RavenUser user = new RavenUser { UserName = requestModel.UserName };
-                UserSecret userSecret = new UserSecret { UserName = requestModel.UserName, Secret = requestModel.Password };
-                bool userStoreResult = await _identityStoreContext.Users.Create(user);
-                bool userSecretStoreResult = await _identityStoreContext.Secrets.Create(userSecret);
+                RavenUserLogin login = new RavenUserLogin { LoginProvider = IdentityConfig.LocalLoginProvider, ProviderKey = requestModel.UserName };
+                user.Logins.Add(login);
 
-                UserLogin login = new UserLogin { UserId = user.Id, LoginProvider = IdentityConfig.LocalLoginProvider, ProviderKey = requestModel.UserName };
-                bool userLoginStoreResult = await _identityStoreContext.Logins.Add(login);
+                IdentityResult result = await _userManager.CreateAsync(user, requestModel.Password);
 
-                if (userStoreResult && userSecretStoreResult && userLoginStoreResult)
+                if (result.Succeeded)
                 {
-                    await _identityStoreContext.SaveChanges();
                     await InternalSignIn(user.Id, isPersistent: false);
                     return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    ModelState.AddModelError(String.Empty, "Failed to create login for: " + requestModel.UserName);
+                    foreach (string item in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, item);
+                    }
                 }
             }
 
@@ -65,13 +65,13 @@ namespace AspNet.Identity.RavenDB.Sample.Mvc.Controllers
 
         private async Task InternalSignIn(string userId, IEnumerable<Claim> claims, bool isPersistent)
         {
-            User user = await _identityStoreContext.Users.Find(userId) as User;
+            RavenUser user = await _userManager.FindByIdAsync(userId);
             if (user != null)
             {
                 // Replace UserIdentity claims with the application specific claims
                 IList<Claim> userClaims = IdentityConfig.RemoveUserIdentityClaims(claims);
                 IdentityConfig.AddUserIdentityClaims(userId, user.UserName, userClaims);
-                IdentityConfig.AddRoleClaims(await _identityStoreContext.Roles.GetRolesForUser(userId), userClaims);
+                // IdentityConfig.AddRoleClaims(await _userManager.Roles.GetRolesForUser(userId), userClaims);
                 SignIn("Application", userClaims, ClaimTypes.Name, IdentityConfig.RoleClaimType, isPersistent);
             }
         }

@@ -1,5 +1,4 @@
-﻿using AspNet.Identity.RavenDB.Indexes;
-using Raven.Client;
+﻿using Raven.Client;
 using Raven.Client.Embedded;
 using Raven.Client.Indexes;
 using Raven.Client.Listeners;
@@ -21,7 +20,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
 
             store.Initialize();
             store.RegisterListener(new NoStaleQueriesListener());
-            IndexCreation.CreateIndexes(typeof(RavenUser_Roles).Assembly, store);
+            // IndexCreation.CreateIndexes(typeof(RavenUser_Roles).Assembly, store);
 
             return store;
         }

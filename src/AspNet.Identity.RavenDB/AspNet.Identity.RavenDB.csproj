@@ -32,42 +32,32 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.AspNet.Identity.Core">
-      <HintPath>..\..\packages\Microsoft.AspNet.Identity.Core.1.0.0-beta1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Microsoft.AspNet.Identity.Core.1.0.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Raven.Abstractions-4.5">
-      <HintPath>..\..\packages\RavenDB.Client.2.5.2666\lib\net45\Raven.Abstractions-4.5.dll</HintPath>
+    <Reference Include="Raven.Abstractions">
+      <HintPath>..\..\packages\RavenDB.Client.2.5.2700\lib\net45\Raven.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Raven.Client.Lightweight-4.5">
-      <HintPath>..\..\packages\RavenDB.Client.2.5.2666\lib\net45\Raven.Client.Lightweight-4.5.dll</HintPath>
+    <Reference Include="Raven.Client.Lightweight">
+      <HintPath>..\..\packages\RavenDB.Client.2.5.2700\lib\net45\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\Common\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Indexes\RavenUser_Roles.cs" />
-    <Compile Include="Stores\RavenRoleStore.cs" />
     <Compile Include="Stores\RavenIdentityStore.cs" />
-    <Compile Include="Stores\RavenUserClaimStore.cs" />
-    <Compile Include="Stores\RavenUserLoginStore.cs" />
-    <Compile Include="Stores\RavenUserSecretStore.cs" />
-    <Compile Include="Utils\Crypto.cs" />
-    <Compile Include="Entities\Role.cs" />
-    <Compile Include="Entities\User.cs" />
-    <Compile Include="Entities\UserClaim.cs" />
-    <Compile Include="Entities\UserLogin.cs" />
-    <Compile Include="Entities\UserSecret.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RavenIdentityStoreContext.cs" />
-    <Compile Include="Entities\RavenUser.cs" />
     <Compile Include="Stores\RavenUserStore.cs" />
+    <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\RavenUserClaim.cs" />
+    <Compile Include="Entities\RavenUserLogin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Entities\RavenUser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="AspNet.Identity.RavenDB.nuspec" />

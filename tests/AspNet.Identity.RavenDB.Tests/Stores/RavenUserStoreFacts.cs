@@ -20,9 +20,8 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IUserStore userStore = new RavenUserStore<RavenUser>(ses);
-                bool result = await userStore.Create(new RavenUser { UserName = userName });
-                await ses.SaveChangesAsync();
+                IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
+                await userStore.CreateAsync(new RavenUser { UserName = userName });
 
                 IUser user = (await ses.Query<RavenUser>()
                     .Where(usr => usr.UserName == userName)
@@ -30,26 +29,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                     .ToListAsync()
                     .ConfigureAwait(false)).FirstOrDefault();
 
-                Assert.True(result);
                 Assert.NotNull(user);
-            }
-        }
-
-        [Fact]
-        public async Task Should_Not_Create_Duplicate_User()
-        {
-            string userName = "Tugberk";
-
-            using (IDocumentStore store = CreateEmbeddableStore())
-            using (IAsyncDocumentSession ses = store.OpenAsyncSession())
-            {
-                IUserStore userStore = new RavenUserStore<RavenUser>(ses);
-                await ses.StoreAsync(new RavenUser { UserName = userName });
-                await ses.SaveChangesAsync();
-
-                bool result = await userStore.Create(new RavenUser { UserName = userName });
-
-                Assert.False(result);
             }
         }
 
@@ -61,11 +41,11 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IUserStore userStore = new RavenUserStore<RavenUser>(ses);
+                IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
                 await ses.StoreAsync(new RavenUser { UserName = userName });
                 await ses.SaveChangesAsync();
 
-                IUser user = await userStore.FindByUserName(userName);
+                IUser user = await userStore.FindByNameAsync(userName);
 
                 Assert.NotNull(user);
                 Assert.Equal(userName, user.UserName, StringComparer.InvariantCultureIgnoreCase);
@@ -81,11 +61,11 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IUserStore userStore = new RavenUserStore<RavenUser>(ses);
+                IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
                 await ses.StoreAsync(new RavenUser { UserName = userName });
                 await ses.SaveChangesAsync();
 
-                IUser user = await userStore.FindByUserName(nonExistingUserName);
+                IUser user = await userStore.FindByNameAsync(nonExistingUserName);
 
                 Assert.Null(user);
             }
@@ -100,37 +80,14 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IUserStore userStore = new RavenUserStore<RavenUser>(ses);
+                IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
                 await ses.StoreAsync(new RavenUser { Id = userId, UserName = userName });
                 await ses.SaveChangesAsync();
 
-                IUser user = await userStore.Find(userId);
+                IUser user = await userStore.FindByIdAsync(userId);
 
                 Assert.NotNull(user);
                 Assert.Equal(userName, user.UserName, StringComparer.InvariantCultureIgnoreCase);
-            }
-        }
-
-        [Fact]
-        public async Task Should_Remove_User()
-        {
-            string userName = "Tugberk";
-            string userId = "RavenUser/2";
-
-            using (IDocumentStore store = CreateEmbeddableStore())
-            using (IAsyncDocumentSession ses = store.OpenAsyncSession())
-            {
-                IUserStore userStore = new RavenUserStore<RavenUser>(ses);
-                await ses.StoreAsync(new RavenUser { Id = userId, UserName = userName });
-                await ses.SaveChangesAsync();
-
-                bool result = await userStore.Delete(userId);
-                await ses.SaveChangesAsync();
-
-                IUser user = await ses.LoadAsync<RavenUser>(userId).ConfigureAwait(false);
-
-                Assert.True(result);
-                Assert.Null(user);
             }
         }
     }
