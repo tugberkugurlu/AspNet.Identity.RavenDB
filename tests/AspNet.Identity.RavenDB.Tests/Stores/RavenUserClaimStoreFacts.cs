@@ -100,6 +100,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
 
                 Assert.Equal(1, user.Claims.Count);
                 Assert.Equal(claimToAdd.Value, user.Claims.FirstOrDefault().ClaimValue);
+                Assert.Equal(claimToAdd.Type, user.Claims.FirstOrDefault().ClaimType);
             }
         }
 
