@@ -2,7 +2,6 @@
 using AspNet.Identity.RavenDB.Stores;
 using Microsoft.AspNet.Identity;
 using Raven.Client;
-using Raven.Client.Embedded;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
