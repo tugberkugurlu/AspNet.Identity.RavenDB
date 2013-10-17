@@ -21,16 +21,16 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                IUserLoginStore userLoginStore = new RavenUserLoginStore<RavenUser, RavenUserLogin>(ses);
-                await ses.StoreAsync(new RavenUser { Id = "RavenUsers/1", UserName = userName });
+                IUserLoginStore<RavenUser> userLoginStore = new RavenUserStore<RavenUser>(ses);
+                RavenUser user = new RavenUser { Id = "RavenUsers/1", UserName = userName };
+                await ses.StoreAsync(user);
                 await ses.SaveChangesAsync();
 
-                bool result = await userLoginStore.Add(new RavenUserLogin { UserId = "RavenUsers/1", LoginProvider = "Local", ProviderKey = userName });
-                await ses.SaveChangesAsync();
+                // Act
+                UserLoginInfo loginToAdd = new UserLoginInfo("Local", userName);
+                await userLoginStore.AddLoginAsync(user, new UserLoginInfo("Local", userName));
 
-                RavenUser user = await ses.LoadAsync<RavenUser>("RavenUsers/1");
-
-                Assert.True(result);
+                // Assert
                 Assert.Equal(1, user.Logins.Count);
             }
         }

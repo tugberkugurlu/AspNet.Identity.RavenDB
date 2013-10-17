@@ -71,6 +71,17 @@ namespace AspNet.Identity.RavenDB.Stores
             return DocumentSession.SaveChangesAsync();
         }
 
+        public async Task DeleteAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            DocumentSession.Delete<TUser>(user);
+            await DocumentSession.SaveChangesAsync();
+        }
+
         // IUserLoginStore
 
         public Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user)
