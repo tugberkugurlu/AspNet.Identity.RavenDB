@@ -1,4 +1,5 @@
-﻿using Owin;
+﻿using Microsoft.Owin.Security.Cookies;
+using Owin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace AspNet.Identity.RavenDB.Sample.Mvc
         public void ConfigureAuth(IAppBuilder app)
         {
             // Enable the application to use a cookie to store information for the signed in user
-            app.UseApplicationSignInCookie();
+            app.UseCookieAuthentication(new CookieAuthenticationOptions());
 
             // Enable the application to use a cookie to temporarily store information about a user logging in with a third party login provider
             // app.UseExternalSignInCookie();

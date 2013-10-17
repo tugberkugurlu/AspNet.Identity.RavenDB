@@ -15,9 +15,8 @@ namespace AspNet.Identity.RavenDB.Sample.Mvc.Controllers
         protected OwinRequest OwinRequest { get { return GetOwinRequest(HttpContext); } }
         protected OwinResponse OwinResponse { get { return GetOwinResponse(HttpContext); } }
 
-        protected virtual void SignIn(ClaimsPrincipal principal, AuthenticationExtra extra)
+        protected virtual void SignIn(ClaimsPrincipal principal)
         {
-            OwinResponse.Grant(principal, extra);
         }
 
         protected virtual void SignIn(string authenticationType, IEnumerable<Claim> claims, string nameClaimType, string roleClaimType, bool isPersistent)
@@ -39,12 +38,7 @@ namespace AspNet.Identity.RavenDB.Sample.Mvc.Controllers
                 throw new ArgumentNullException("roleClaimType");
             }
 
-            AuthenticationExtra extra = new AuthenticationExtra()
-            {
-                IsPersistent = isPersistent
-            };
-
-            SignIn(new ClaimsPrincipal(new ClaimsIdentity(claims, authenticationType, nameClaimType, roleClaimType)), extra);
+            SignIn(new ClaimsPrincipal(new ClaimsIdentity(claims, authenticationType, nameClaimType, roleClaimType)));
         }
 
         // private helpers

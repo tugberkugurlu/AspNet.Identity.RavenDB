@@ -9,7 +9,12 @@ using System.Threading.Tasks;
 
 namespace AspNet.Identity.RavenDB.Stores
 {
-    public sealed class RavenUserStore<TUser> : RavenIdentityStore<TUser>, IUserStore<TUser>, IUserLoginStore<TUser>, IUserClaimStore<TUser> where TUser : RavenUser
+    public sealed class RavenUserStore<TUser> : RavenIdentityStore<TUser>,
+        IUserLoginStore<TUser>,
+        IUserClaimStore<TUser>,
+        IUserPasswordStore<TUser>,
+        IUserSecurityStampStore<TUser>,
+        IUserStore<TUser> where TUser : RavenUser
     {
         public RavenUserStore(IAsyncDocumentSession documentSession) : this(documentSession, true)
         {
@@ -185,6 +190,61 @@ namespace AspNet.Identity.RavenDB.Stores
                 user.Claims.Remove(userClaim);
             }
 
+            return Task.FromResult(0);
+        }
+
+        // IUserPasswordStore
+
+        public Task<string> GetPasswordHashAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult<string>(user.PasswordHash);
+        }
+
+        public Task<bool> HasPasswordAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult<bool>(user.PasswordHash != null);
+        }
+
+        public Task SetPasswordHashAsync(TUser user, string passwordHash)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+            user.PasswordHash = passwordHash;
+            return Task.FromResult(0);
+        }
+
+        // IUserSecurityStampStore
+
+        public Task<string> GetSecurityStampAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult<string>(user.SecurityStamp);
+        }
+
+        public Task SetSecurityStampAsync(TUser user, string stamp)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.SecurityStamp = stamp;
             return Task.FromResult(0);
         }
     }
