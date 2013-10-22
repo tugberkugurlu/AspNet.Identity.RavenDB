@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AspNet.Identity.RavenDB.Entities;
 using AspNet.Identity.RavenDB.Stores;
@@ -32,7 +33,12 @@ namespace AspNet.Identity.RavenDB.Tests.Stores {
 
                 foreach (var role in roles) 
                 {
-                    user.Roles.Add(role);
+                    user.Claims.Add(
+                        new RavenUserClaim 
+                        {
+                            ClaimType = ClaimTypes.Role, 
+                            ClaimValue = role
+                        });
                 }
 
                 await ses.StoreAsync(user);
@@ -68,14 +74,19 @@ namespace AspNet.Identity.RavenDB.Tests.Stores {
 
                 foreach (var role in roles) 
                 {
-                    user.Roles.Add(role);
+                    user.Claims.Add(
+                        new RavenUserClaim 
+                        {
+                            ClaimType = ClaimTypes.Role,
+                            ClaimValue = role
+                        });
                 }
 
                 await userRoleStore.AddToRoleAsync(user, "PowerUser");
 
-                Assert.Equal(2, user.Roles.Count());
-                Assert.Equal("Administrator", user.Roles.ElementAt(0));
-                Assert.Equal("PowerUser", user.Roles.ElementAt(1));
+                Assert.Equal(2, user.Claims.Count());
+                Assert.Equal("Administrator", user.Claims.ElementAt(0).ClaimValue);
+                Assert.Equal("PowerUser", user.Claims.ElementAt(1).ClaimValue);
             }
         }
 
@@ -102,13 +113,18 @@ namespace AspNet.Identity.RavenDB.Tests.Stores {
 
                 foreach (var role in roles) 
                 {
-                    user.Roles.Add(role);
+                    user.Claims.Add(
+                        new RavenUserClaim 
+                        {
+                            ClaimType = ClaimTypes.Role,
+                            ClaimValue = role
+                        });
                 }
 
                 await userRoleStore.RemoveFromRoleAsync(user, "Administrator");
 
-                Assert.Equal(1, user.Roles.Count());
-                Assert.Equal("PowerUser", user.Roles.ElementAt(0));
+                Assert.Equal(1, user.Claims.Count());
+                Assert.Equal("PowerUser", user.Claims.ElementAt(0).ClaimValue);
             }
         }
     }

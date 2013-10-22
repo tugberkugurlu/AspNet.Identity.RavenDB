@@ -261,8 +261,8 @@ namespace AspNet.Identity.RavenDB.Stores
             {
                 throw new ArgumentNullException("role");
             }
-            user.Roles.Add(role);
-            return Task.FromResult(0);
+
+            return AddClaimAsync(user, new Claim(ClaimTypes.Role, role));
         }
 
         public Task RemoveFromRoleAsync(TUser user, string role) 
@@ -275,20 +275,24 @@ namespace AspNet.Identity.RavenDB.Stores
             {
                 throw new ArgumentNullException("role");
             }
-            user.Roles.Remove(role);
-            return Task.FromResult(0);
+
+            return RemoveClaimAsync(user, new Claim(ClaimTypes.Role, role));
         }
 
-        public Task<IList<string>> GetRolesAsync(TUser user) 
+        public async Task<IList<string>> GetRolesAsync(TUser user) 
         {
             if (user == null) 
             {
                 throw new ArgumentNullException("user");
             }
-            return Task.FromResult((IList<string>)user.Roles.ToList());
+
+            IList<Claim> claims = await GetClaimsAsync(user);
+            return claims
+                .Where(claim => claim.Type == ClaimTypes.Role)
+                .Select(claim => claim.Value).ToList();
         }
 
-        public Task<bool> IsInRoleAsync(TUser user, string role) 
+        public async Task<bool> IsInRoleAsync(TUser user, string role) 
         {
             if (user == null) 
             {
@@ -298,7 +302,9 @@ namespace AspNet.Identity.RavenDB.Stores
             {
                 throw new ArgumentNullException("role");
             }
-            return Task.FromResult(user.Roles.Contains(role));
+
+            IList<Claim> claims = await GetClaimsAsync(user);
+            return claims.Any(claim => claim.Type == ClaimTypes.Role && claim.Value == role);
         }
     }
 }
