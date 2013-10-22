@@ -9,9 +9,11 @@ namespace AspNet.Identity.RavenDB.Entities
         {
             Claims = new Collection<RavenUserClaim>();
             Logins = new Collection<RavenUserLogin>();
+            Roles = new Collection<string>();
         }
 
         public ICollection<RavenUserClaim> Claims { get; set; }
         public ICollection<RavenUserLogin> Logins { get; set; }
+        public ICollection<string> Roles { get; set; }
     }
 }

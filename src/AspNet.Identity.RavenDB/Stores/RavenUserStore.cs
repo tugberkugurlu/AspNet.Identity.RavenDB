@@ -14,6 +14,7 @@ namespace AspNet.Identity.RavenDB.Stores
         IUserClaimStore<TUser>,
         IUserPasswordStore<TUser>,
         IUserSecurityStampStore<TUser>,
+        IUserRoleStore<TUser>,
         IUserStore<TUser> where TUser : RavenUser
     {
         public RavenUserStore(IAsyncDocumentSession documentSession) : this(documentSession, true)
@@ -246,6 +247,58 @@ namespace AspNet.Identity.RavenDB.Stores
 
             user.SecurityStamp = stamp;
             return Task.FromResult(0);
+        }
+
+        // IUserRoleStore
+
+        public Task AddToRoleAsync(TUser user, string role)
+        {
+            if (user == null) 
+            {
+                throw new ArgumentNullException("user");
+            }
+            if (String.IsNullOrEmpty(role)) 
+            {
+                throw new ArgumentNullException("role");
+            }
+            user.Roles.Add(role);
+            return Task.FromResult(0);
+        }
+
+        public Task RemoveFromRoleAsync(TUser user, string role) 
+        {
+            if (user == null) 
+            {
+                throw new ArgumentNullException("user");
+            }
+            if (String.IsNullOrEmpty(role)) 
+            {
+                throw new ArgumentNullException("role");
+            }
+            user.Roles.Remove(role);
+            return Task.FromResult(0);
+        }
+
+        public Task<IList<string>> GetRolesAsync(TUser user) 
+        {
+            if (user == null) 
+            {
+                throw new ArgumentNullException("user");
+            }
+            return Task.FromResult((IList<string>)user.Roles.ToList());
+        }
+
+        public Task<bool> IsInRoleAsync(TUser user, string role) 
+        {
+            if (user == null) 
+            {
+                throw new ArgumentNullException("user");
+            }
+            if (String.IsNullOrEmpty(role)) 
+            {
+                throw new ArgumentNullException("role");
+            }
+            return Task.FromResult(user.Roles.Contains(role));
         }
     }
 }
