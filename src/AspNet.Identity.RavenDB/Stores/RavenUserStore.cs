@@ -14,7 +14,6 @@ namespace AspNet.Identity.RavenDB.Stores
         IUserClaimStore<TUser>,
         IUserPasswordStore<TUser>,
         IUserSecurityStampStore<TUser>,
-        IUserRoleStore<TUser>,
         IUserStore<TUser> where TUser : RavenUser
     {
         public RavenUserStore(IAsyncDocumentSession documentSession) : this(documentSession, true)
@@ -247,64 +246,6 @@ namespace AspNet.Identity.RavenDB.Stores
 
             user.SecurityStamp = stamp;
             return Task.FromResult(0);
-        }
-
-        // IUserRoleStore
-
-        public Task AddToRoleAsync(TUser user, string role)
-        {
-            if (user == null) 
-            {
-                throw new ArgumentNullException("user");
-            }
-            if (String.IsNullOrEmpty(role)) 
-            {
-                throw new ArgumentNullException("role");
-            }
-
-            return AddClaimAsync(user, new Claim(ClaimTypes.Role, role));
-        }
-
-        public Task RemoveFromRoleAsync(TUser user, string role) 
-        {
-            if (user == null) 
-            {
-                throw new ArgumentNullException("user");
-            }
-            if (String.IsNullOrEmpty(role)) 
-            {
-                throw new ArgumentNullException("role");
-            }
-
-            return RemoveClaimAsync(user, new Claim(ClaimTypes.Role, role));
-        }
-
-        public async Task<IList<string>> GetRolesAsync(TUser user) 
-        {
-            if (user == null) 
-            {
-                throw new ArgumentNullException("user");
-            }
-
-            IList<Claim> claims = await GetClaimsAsync(user);
-            return claims
-                .Where(claim => claim.Type == ClaimTypes.Role)
-                .Select(claim => claim.Value).ToList();
-        }
-
-        public async Task<bool> IsInRoleAsync(TUser user, string role) 
-        {
-            if (user == null) 
-            {
-                throw new ArgumentNullException("user");
-            }
-            if (String.IsNullOrEmpty(role)) 
-            {
-                throw new ArgumentNullException("role");
-            }
-
-            IList<Claim> claims = await GetClaimsAsync(user);
-            return claims.Any(claim => claim.Type == ClaimTypes.Role && claim.Value == role);
         }
     }
 }
