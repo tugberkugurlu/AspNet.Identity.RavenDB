@@ -1,5 +1,7 @@
-﻿using Owin;
+﻿using Microsoft.Owin;
+using Owin;
 
+[assembly: OwinStartupAttribute(typeof(AspNet.Identity.RavenDB.Sample.Mvc.Startup))]
 namespace AspNet.Identity.RavenDB.Sample.Mvc
 {
     public partial class Startup

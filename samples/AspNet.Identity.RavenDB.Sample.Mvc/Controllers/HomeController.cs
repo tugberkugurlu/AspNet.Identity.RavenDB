@@ -8,9 +8,22 @@ namespace AspNet.Identity.RavenDB.Sample.Mvc.Controllers
 {
     public class HomeController : Controller
     {
-        public ViewResult Index()
+        public ActionResult Index()
         {
-            var req = HttpContext;
+            return View();
+        }
+
+        public ActionResult About()
+        {
+            ViewBag.Message = "Your application description page.";
+
+            return View();
+        }
+
+        public ActionResult Contact()
+        {
+            ViewBag.Message = "Your contact page.";
+
             return View();
         }
     }

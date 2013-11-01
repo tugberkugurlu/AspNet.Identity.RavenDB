@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.20617.1 PREVIEW
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.Identity.RavenDB", "src\AspNet.Identity.RavenDB\AspNet.Identity.RavenDB.csproj", "{99BBAC24-18AF-4BBA-8074-FEE00D6035F0}"
 EndProject
@@ -35,7 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{B40513
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{0BC1FF84-2F37-4F0F-8FB1-DB7609DAB85B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.Identity.RavenDB.Sample.Mvc", "samples\AspNet.Identity.RavenDB.Sample.Mvc\AspNet.Identity.RavenDB.Sample.Mvc.csproj", "{5D2B3177-7564-4B0A-B852-4A8676F0280D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNet.Identity.RavenDB.Sample.Mvc", "samples\AspNet.Identity.RavenDB.Sample.Mvc\AspNet.Identity.RavenDB.Sample.Mvc.csproj", "{5C1399DB-7AF7-487F-B6BD-17E2E31B0453}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,16 +51,16 @@ Global
 		{3C5268BE-44C9-494D-A236-F699F99D7D7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C5268BE-44C9-494D-A236-F699F99D7D7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C5268BE-44C9-494D-A236-F699F99D7D7C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5D2B3177-7564-4B0A-B852-4A8676F0280D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5D2B3177-7564-4B0A-B852-4A8676F0280D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5D2B3177-7564-4B0A-B852-4A8676F0280D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5D2B3177-7564-4B0A-B852-4A8676F0280D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C1399DB-7AF7-487F-B6BD-17E2E31B0453}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C1399DB-7AF7-487F-B6BD-17E2E31B0453}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C1399DB-7AF7-487F-B6BD-17E2E31B0453}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C1399DB-7AF7-487F-B6BD-17E2E31B0453}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3C5268BE-44C9-494D-A236-F699F99D7D7C} = {7734B739-5566-433A-B091-016C42D78CDE}
-		{5D2B3177-7564-4B0A-B852-4A8676F0280D} = {0BC1FF84-2F37-4F0F-8FB1-DB7609DAB85B}
+		{5C1399DB-7AF7-487F-B6BD-17E2E31B0453} = {0BC1FF84-2F37-4F0F-8FB1-DB7609DAB85B}
 	EndGlobalSection
 EndGlobal
