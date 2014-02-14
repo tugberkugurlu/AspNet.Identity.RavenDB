@@ -41,7 +41,7 @@ namespace AspNet.Identity.RavenDB.Stores
             }
 
             await DocumentSession.StoreAsync(user).ConfigureAwait(false);
-            await DocumentSession.SaveChangesAsync();
+            await DocumentSession.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public Task<TUser> FindByIdAsync(string userId)
