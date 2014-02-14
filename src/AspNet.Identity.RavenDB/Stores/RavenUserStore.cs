@@ -76,7 +76,7 @@ namespace AspNet.Identity.RavenDB.Stores
             return DocumentSession.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(TUser user)
+        public Task DeleteAsync(TUser user)
         {
             if (user == null)
             {
@@ -84,7 +84,7 @@ namespace AspNet.Identity.RavenDB.Stores
             }
 
             DocumentSession.Delete<TUser>(user);
-            await DocumentSession.SaveChangesAsync();
+            return DocumentSession.SaveChangesAsync();
         }
 
         // IUserLoginStore
