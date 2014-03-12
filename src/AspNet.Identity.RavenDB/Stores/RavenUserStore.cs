@@ -27,13 +27,9 @@ namespace AspNet.Identity.RavenDB.Stores
 
         // IUserStore
 
-        /// <summary>
-        /// </summary>
         /// <remarks>
         /// This method doesn't perform uniquness. That's the responsibility of the session provider.
         /// </remarks>
-        /// <param name="user"></param>
-        /// <returns></returns>
         public async Task CreateAsync(TUser user)
         {
             if (user == null)
@@ -65,13 +61,9 @@ namespace AspNet.Identity.RavenDB.Stores
             return GetUserByUserName(userName);
         }
 
-        /// <summary>
-        /// </summary>
         /// <remarks>
         /// This method assumes that incomming TUser parameter is tracked in the session. So, this method literally behaves as SaveChangeAsync
         /// </remarks>
-        /// <param name="user"></param>
-        /// <returns></returns>
         public Task UpdateAsync(TUser user)
         {
             return DocumentSession.SaveChangesAsync();
