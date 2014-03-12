@@ -14,6 +14,7 @@ namespace AspNet.Identity.RavenDB.Stores
         IUserClaimStore<TUser>,
         IUserPasswordStore<TUser>,
         IUserSecurityStampStore<TUser>,
+        IUserTwoFactorStore<TUser>,
         IUserStore<TUser> where TUser : RavenUser
     {
         public RavenUserStore(IAsyncDocumentSession documentSession) : this(documentSession, true)
@@ -246,6 +247,29 @@ namespace AspNet.Identity.RavenDB.Stores
 
             user.SecurityStamp = stamp;
             return Task.FromResult(0);
+        }
+
+        // IUserTwoFactorStore
+
+        public Task<bool> GetTwoFactorEnabledAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult(user.IsTwoFactorEnabled);
+        }
+
+        public Task SetTwoFactorEnabledAsync(TUser user, bool enabled)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.IsTwoFactorEnabled = enabled;
+            return Task.FromResult<int>(0);
         }
     }
 }

@@ -91,6 +91,7 @@
     <Compile Include="Stores\RavenUserClaimStoreFacts.cs" />
     <Compile Include="Stores\RavenUserLoginStoreFacts.cs" />
     <Compile Include="Stores\RavenUserStoreFacts.cs" />
+    <Compile Include="Stores\RavenUserTwoFactorStoreFacts.cs" />
     <Compile Include="Stores\TestBase.cs" />
   </ItemGroup>
   <ItemGroup>
