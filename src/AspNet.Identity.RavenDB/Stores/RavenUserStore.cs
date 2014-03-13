@@ -16,6 +16,7 @@ namespace AspNet.Identity.RavenDB.Stores
         IUserSecurityStampStore<TUser>,
         IQueryableUserStore<TUser>,
         IUserTwoFactorStore<TUser>,
+        IUserEmailStore<TUser>,
         IUserStore<TUser> where TUser : RavenUser
     {
         public RavenUserStore(IAsyncDocumentSession documentSession) : this(documentSession, true)
@@ -273,6 +274,44 @@ namespace AspNet.Identity.RavenDB.Stores
 
             user.IsTwoFactorEnabled = enabled;
             return Task.FromResult<int>(0);
+        }
+
+        // IUserEmailStore
+
+        public Task<TUser> FindByEmailAsync(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> GetEmailAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult(user.Email);
+        }
+
+        public Task<bool> GetEmailConfirmedAsync(TUser user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetEmailAsync(TUser user, string email)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.Email = email;
+            return Task.FromResult<int>(0);
+        }
+
+        public Task SetEmailConfirmedAsync(TUser user, bool confirmed)
+        {
+            throw new NotImplementedException();
         }
     }
 }
