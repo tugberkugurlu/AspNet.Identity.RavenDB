@@ -298,6 +298,16 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public async Task<bool> GetEmailConfirmedAsync(TUser user)
         {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            if (string.IsNullOrEmpty(user.Email) == true)
+            {
+                throw new InvalidOperationException("Cannot set the E-mail as confirmed because the 'Email' property on the 'user' parameter is null.");
+            }
+
             string keyToLookFor = RavenUserEmailConfirmation.GenerateKey(user.UserName, user.Email);
             RavenUserEmailConfirmation confirmation = await DocumentSession.LoadAsync<RavenUserEmailConfirmation>(keyToLookFor).ConfigureAwait(false);
 
