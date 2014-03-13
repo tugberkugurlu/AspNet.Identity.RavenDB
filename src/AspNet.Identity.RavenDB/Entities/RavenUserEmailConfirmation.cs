@@ -8,13 +8,15 @@ namespace AspNet.Identity.RavenDB.Entities.Entities
     /// </summary>
     public class RavenUserEmailConfirmation
     {
+        const string KeyTemplate = "RavenUserEmailConfirmations/{0}/{1}";
+
         public RavenUserEmailConfirmation()
         {
         }
 
         public RavenUserEmailConfirmation(string userName, string email)
         {
-            Id = string.Concat("RavenUsers/", userName, "/", email);
+            Id = string.Format(KeyTemplate, userName, email);
         }
 
         public string Id { get; set; }
