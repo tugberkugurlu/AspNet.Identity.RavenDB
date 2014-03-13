@@ -296,9 +296,12 @@ namespace AspNet.Identity.RavenDB.Stores
             return Task.FromResult(user.Email);
         }
 
-        public Task<bool> GetEmailConfirmedAsync(TUser user)
+        public async Task<bool> GetEmailConfirmedAsync(TUser user)
         {
-            throw new NotImplementedException();
+            string keyToLookFor = RavenUserEmailConfirmation.GenerateKey(user.UserName, user.Email);
+            RavenUserEmailConfirmation confirmation = await DocumentSession.LoadAsync<RavenUserEmailConfirmation>(keyToLookFor).ConfigureAwait(false);
+
+            return confirmation != null;
         }
 
         public Task SetEmailAsync(TUser user, string email)

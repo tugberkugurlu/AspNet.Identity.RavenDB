@@ -16,10 +16,15 @@ namespace AspNet.Identity.RavenDB.Entities.Entities
 
         public RavenUserEmailConfirmation(string userName, string email)
         {
-            Id = string.Format(KeyTemplate, userName, email);
+            Id = GenerateKey(userName, email);
         }
 
         public string Id { get; set; }
         public DateTimeOffset ConfirmedOn { get; set; }
+
+        public static string GenerateKey(string userName, string email)
+        {
+            return string.Format(KeyTemplate, userName, email);
+        }
     }
 }
