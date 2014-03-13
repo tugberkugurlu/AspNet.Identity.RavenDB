@@ -14,6 +14,7 @@ namespace AspNet.Identity.RavenDB.Stores
         IUserClaimStore<TUser>,
         IUserPasswordStore<TUser>,
         IUserSecurityStampStore<TUser>,
+        IQueryableUserStore<TUser>,
         IUserTwoFactorStore<TUser>,
         IUserStore<TUser> where TUser : RavenUser
     {
@@ -23,6 +24,16 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public RavenUserStore(IAsyncDocumentSession documentSession, bool disposeDocumentSession) : base(documentSession, disposeDocumentSession)
         {
+        }
+
+        // IQueryableUserStore
+
+        public IQueryable<TUser> Users
+        {
+            get 
+            { 
+                return DocumentSession.Query<TUser>(); 
+            }
         }
 
         // IUserStore

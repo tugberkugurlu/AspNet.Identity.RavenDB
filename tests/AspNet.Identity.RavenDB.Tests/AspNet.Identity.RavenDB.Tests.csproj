@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stores\RavenQueryableUserStoreFacts.cs" />
     <Compile Include="Stores\RavenUserClaimStoreFacts.cs" />
     <Compile Include="Stores\RavenUserLoginStoreFacts.cs" />
     <Compile Include="Stores\RavenUserStoreFacts.cs" />
