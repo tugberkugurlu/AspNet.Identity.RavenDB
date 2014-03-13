@@ -1,4 +1,5 @@
 ﻿using AspNet.Identity.RavenDB.Entities;
+using AspNet.Identity.RavenDB.Entities.Entities;
 using Microsoft.AspNet.Identity;
 using Raven.Client;
 using System;
@@ -19,11 +20,13 @@ namespace AspNet.Identity.RavenDB.Stores
         IUserEmailStore<TUser>,
         IUserStore<TUser> where TUser : RavenUser
     {
-        public RavenUserStore(IAsyncDocumentSession documentSession) : this(documentSession, true)
+        public RavenUserStore(IAsyncDocumentSession documentSession)
+            : this(documentSession, true)
         {
         }
 
-        public RavenUserStore(IAsyncDocumentSession documentSession, bool disposeDocumentSession) : base(documentSession, disposeDocumentSession)
+        public RavenUserStore(IAsyncDocumentSession documentSession, bool disposeDocumentSession)
+            : base(documentSession, disposeDocumentSession)
         {
         }
 
@@ -31,9 +34,9 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public IQueryable<TUser> Users
         {
-            get 
-            { 
-                return DocumentSession.Query<TUser>(); 
+            get
+            {
+                return DocumentSession.Query<TUser>();
             }
         }
 
@@ -311,7 +314,18 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public Task SetEmailConfirmedAsync(TUser user, bool confirmed)
         {
-            throw new NotImplementedException();
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            if(string.IsNullOrEmpty(user.Email) == true)
+            {
+                throw new InvalidOperationException("Cannot set the E-mail as confirmed because the 'Email' property on the 'user' parameter is null.");
+            }
+
+            RavenUserEmailConfirmation confirmation = new RavenUserEmailConfirmation(user.UserName, user.Email);
+            return DocumentSession.StoreAsync(confirmation);
         }
     }
 }
