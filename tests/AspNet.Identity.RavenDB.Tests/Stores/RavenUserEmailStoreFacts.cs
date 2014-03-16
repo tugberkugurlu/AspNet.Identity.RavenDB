@@ -131,5 +131,101 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 }
             }
         }
+
+        // GetEmailConfirmedAsync
+
+        [Fact]
+        public async Task GetEmailConfirmedAsync_Should_Return_True_If_Email_Confirmed()
+        {
+            const string userName = "Tugberk";
+            const string userId = "RavenUsers/1";
+            const string email = "tugberk@example.com";
+
+            using (IDocumentStore store = CreateEmbeddableStore())
+            {
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    RavenUser user = new RavenUser { Id = userId, UserName = userName };
+                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = userId };
+                    RavenUserEmailConfirmation userEmailConfirmation = new RavenUserEmailConfirmation(userName, email) { ConfirmedOn = DateTimeOffset.UtcNow };
+                    await ses.StoreAsync(user);
+                    await ses.StoreAsync(userEmail);
+                    await ses.StoreAsync(userEmailConfirmation);
+                    await ses.SaveChangesAsync();
+                }
+
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    IUserEmailStore<RavenUser> userEmailStore = new RavenUserStore<RavenUser>(ses);
+                    RavenUser ravenUser = await ses.LoadAsync<RavenUser>(userId);
+                    bool isConfirmed = await userEmailStore.GetEmailConfirmedAsync(ravenUser);
+
+                    Assert.True(isConfirmed);
+                }
+            }
+        }
+
+        [Fact]
+        public async Task GetEmailConfirmedAsync_Should_Return_False_If_Email_Is_Not_Confirmed()
+        {
+            const string userName = "Tugberk";
+            const string userId = "RavenUsers/1";
+            const string email = "tugberk@example.com";
+
+            using (IDocumentStore store = CreateEmbeddableStore())
+            {
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    RavenUser user = new RavenUser { Id = userId, UserName = userName };
+                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = userId };
+                    await ses.StoreAsync(user);
+                    await ses.StoreAsync(userEmail);
+                    await ses.SaveChangesAsync();
+                }
+
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    IUserEmailStore<RavenUser> userEmailStore = new RavenUserStore<RavenUser>(ses);
+                    RavenUser ravenUser = await ses.LoadAsync<RavenUser>(userId);
+                    bool isConfirmed = await userEmailStore.GetEmailConfirmedAsync(ravenUser);
+
+                    Assert.False(isConfirmed);
+                }
+            }
+        }
+
+        [Fact]
+        public async Task GetEmailConfirmedAsync_Should_Throw_InvalidOperationException_If_Email_Is_Not_Available()
+        {
+            const string userName = "Tugberk";
+            const string userId = "RavenUsers/1";
+
+            using (IDocumentStore store = CreateEmbeddableStore())
+            {
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    RavenUser user = new RavenUser { Id = userId, UserName = userName };
+                    await ses.StoreAsync(user);
+                    await ses.SaveChangesAsync();
+                }
+
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    IUserEmailStore<RavenUser> userEmailStore = new RavenUserStore<RavenUser>(ses);
+                    RavenUser ravenUser = await ses.LoadAsync<RavenUser>(userId);
+                    Assert.Throws<InvalidOperationException>(() =>
+                    {
+                        try
+                        {
+                            bool isConfirmed = userEmailStore.GetEmailConfirmedAsync(ravenUser).Result;
+                        }
+                        catch (AggregateException ex)
+                        {
+                            throw ex.GetBaseException();
+                        }
+                    });
+                }
+            }
+        }
     }
 }
