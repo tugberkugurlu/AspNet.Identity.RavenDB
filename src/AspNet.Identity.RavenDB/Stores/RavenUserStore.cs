@@ -280,19 +280,32 @@ namespace AspNet.Identity.RavenDB.Stores
 
         // IUserEmailStore
 
-        public Task<TUser> FindByEmailAsync(string email)
+        public async Task<TUser> FindByEmailAsync(string email)
         {
-            throw new NotImplementedException();
+            string keyToLookFor = RavenUserEmail.GenerateKey(email);
+            RavenUserEmail ravenUserEmail = await DocumentSession
+                .Include<RavenUserEmail, TUser>(usrEmail => usrEmail.UserId)
+                .LoadAsync(keyToLookFor)
+                .ConfigureAwait(false);
+
+            return (ravenUserEmail != null)
+                ? await DocumentSession.LoadAsync<TUser>(ravenUserEmail.UserId).ConfigureAwait(false)
+                : default(TUser);
         }
 
-        public Task<string> GetEmailAsync(TUser user)
+        public async Task<string> GetEmailAsync(TUser user)
         {
             if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
 
-            return Task.FromResult(user.Email);
+            RavenUserEmail ravenUserEmail = await GetUserEmailAsync(user.Id)
+                .ConfigureAwait(false);
+
+            return (ravenUserEmail != null)
+                ? ravenUserEmail.Email
+                : null;
         }
 
         public async Task<bool> GetEmailConfirmedAsync(TUser user)
@@ -302,42 +315,76 @@ namespace AspNet.Identity.RavenDB.Stores
                 throw new ArgumentNullException("user");
             }
 
-            if (string.IsNullOrEmpty(user.Email) == true)
+            RavenUserEmail ravenUserEmail = await GetUserEmailAsync(user.Id).ConfigureAwait(false);
+            if (ravenUserEmail == null)
             {
-                throw new InvalidOperationException("Cannot set the E-mail as confirmed because the 'Email' property on the 'user' parameter is null.");
+                throw new InvalidOperationException("Cannot get the confirmation status of the e-mail because user doesn't have an e-mail.");
             }
 
-            string keyToLookFor = RavenUserEmailConfirmation.GenerateKey(user.UserName, user.Email);
-            RavenUserEmailConfirmation confirmation = await DocumentSession.LoadAsync<RavenUserEmailConfirmation>(keyToLookFor).ConfigureAwait(false);
+            RavenUserEmailConfirmation confirmation = await GetUserEmailConfirmationAsync(user.UserName, ravenUserEmail.Email)
+                .ConfigureAwait(false);
 
             return confirmation != null;
         }
 
         public Task SetEmailAsync(TUser user, string email)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
+            if (user == null) throw new ArgumentNullException("user");
+            if (email == null) throw new ArgumentNullException("email");
 
-            user.Email = email;
-            return Task.FromResult<int>(0);
+            RavenUserEmail ravenUserEmail = new RavenUserEmail(email)
+            {
+                UserId = user.Id
+            };
+
+            return DocumentSession.StoreAsync(ravenUserEmail);
         }
 
-        public Task SetEmailConfirmedAsync(TUser user, bool confirmed)
+        public async Task SetEmailConfirmedAsync(TUser user, bool confirmed)
         {
             if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
 
-            if(string.IsNullOrEmpty(user.Email) == true)
+            RavenUserEmail ravenUserEmail = await GetUserEmailAsync(user.Id).ConfigureAwait(false);
+            if (ravenUserEmail == null)
             {
-                throw new InvalidOperationException("Cannot set the E-mail as confirmed because the 'Email' property on the 'user' parameter is null.");
+                throw new InvalidOperationException("Cannot set the confirmation status of the e-mail because user doesn't have an e-mail.");
             }
 
-            RavenUserEmailConfirmation confirmation = new RavenUserEmailConfirmation(user.UserName, user.Email);
-            return DocumentSession.StoreAsync(confirmation);
+            if (confirmed)
+            {
+                RavenUserEmailConfirmation confirmation = new RavenUserEmailConfirmation(user.UserName, ravenUserEmail.Email)
+                {
+                    ConfirmedOn = DateTimeOffset.UtcNow
+                };
+
+                await DocumentSession.StoreAsync(confirmation).ConfigureAwait(false);
+            }
+            else
+            {
+                RavenUserEmailConfirmation ravenUserEmailConfirmation = await GetUserEmailConfirmationAsync(user.UserName, ravenUserEmail.Email).ConfigureAwait(false);
+                if (ravenUserEmailConfirmation != null)
+                {
+                    DocumentSession.Delete(ravenUserEmailConfirmation);
+                }
+            }
+        }
+
+        // privates
+
+        private Task<RavenUserEmail> GetUserEmailAsync(string userId)
+        {
+            return DocumentSession
+                .Query<RavenUserEmail>()
+                .FirstOrDefaultAsync(userEmail => userEmail.UserId == userId);
+        }
+
+        private Task<RavenUserEmailConfirmation> GetUserEmailConfirmationAsync(string userName, string email)
+        {
+            string keyToLookFor = RavenUserEmailConfirmation.GenerateKey(userName, email);
+            return DocumentSession.LoadAsync<RavenUserEmailConfirmation>(keyToLookFor);
         }
     }
 }

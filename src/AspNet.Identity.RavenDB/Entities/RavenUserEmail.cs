@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AspNet.Identity.RavenDB.Entities
+﻿namespace AspNet.Identity.RavenDB.Entities
 {
     /// <summary>
     /// Represents the user's e-mail address. This is stored in a seperate document as
@@ -20,17 +14,19 @@ namespace AspNet.Identity.RavenDB.Entities
         {
         }
 
-        public RavenUserEmail(string userName, string email)
+        public RavenUserEmail(string email)
         {
-            Id = GenerateKey(userName, email);
+            Id = GenerateKey(email);
+            Email = email;
         }
 
         public string Id { get; set; }
+        public string UserId { get; set; }
         public string Email { get; set; }
 
-        internal static string GenerateKey(string userName, string email)
+        internal static string GenerateKey(string email)
         {
-            return string.Format(Constants.RavenUserEmailKeyTemplate, userName, email);
+            return string.Format(Constants.RavenUserEmailKeyTemplate, email);
         }
     }
 }

@@ -58,7 +58,6 @@
     <Compile Include="Entities\RavenUserEmailConfirmation.cs" />
     <Compile Include="Stores\RavenIdentityStore.cs" />
     <Compile Include="Stores\RavenUserStore.cs" />
-    <Compile Include="Entities\User.cs" />
     <Compile Include="Entities\RavenUserClaim.cs" />
     <Compile Include="Entities\RavenUserLogin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
