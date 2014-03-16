@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AspNet.Identity.RavenDB.Entities;
 using AspNet.Identity.RavenDB.Stores;
 using Microsoft.AspNet.Identity;
+using Raven.Abstractions.Exceptions;
 using Raven.Client;
 using Xunit;
 
@@ -218,6 +219,88 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                         try
                         {
                             bool isConfirmed = userEmailStore.GetEmailConfirmedAsync(ravenUser).Result;
+                        }
+                        catch (AggregateException ex)
+                        {
+                            throw ex.GetBaseException();
+                        }
+                    });
+                }
+            }
+        }
+
+        // SetEmailAsync
+
+        [Fact]
+        public async Task SetEmailAsync_Should_Set_The_Email_Correctly()
+        {
+            const string userName = "Tugberk";
+            const string userId = "RavenUsers/1";
+            const string emailToSave = "tugberk@example.com";
+
+            using (IDocumentStore store = CreateEmbeddableStore())
+            {
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    RavenUser user = new RavenUser { Id = userId, UserName = userName };
+                    await ses.StoreAsync(user);
+                    await ses.SaveChangesAsync();
+                }
+
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    IUserEmailStore<RavenUser> userEmailStore = new RavenUserStore<RavenUser>(ses);
+                    RavenUser ravenUser = await ses.LoadAsync<RavenUser>(userId);
+                    await userEmailStore.SetEmailAsync(ravenUser, emailToSave);
+                    await ses.SaveChangesAsync();
+                }
+
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    string keyToLookFor = RavenUserEmail.GenerateKey(emailToSave);
+                    RavenUserEmail userEmail = await ses.LoadAsync<RavenUserEmail>(keyToLookFor);
+
+                    Assert.NotNull(userEmail);
+                    Assert.Equal(emailToSave, userEmail.Email);
+                    Assert.Equal(userId, userEmail.UserId);
+                }
+            }
+        }
+
+        [Fact]
+        public async Task SetEmailAsync_Should_Set_Email_And_SaveChangesAsync_Should_Throw_ConcurrencyException_If_The_Email_Already_Exists()
+        {
+            const string userName = "Tugberk";
+            const string userId = "RavenUsers/1";
+            const string email = "tugberk@example.com";
+            const string userName2 = "Tugberk2";
+            const string userId2 = "RavenUsers/2";
+
+            using (IDocumentStore store = CreateEmbeddableStore())
+            {
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    RavenUser user = new RavenUser { Id = userId, UserName = userName };
+                    RavenUser user2 = new RavenUser { Id = userId2, UserName = userName2 };
+                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = userId };
+                    await ses.StoreAsync(user);
+                    await ses.StoreAsync(user2);
+                    await ses.StoreAsync(userEmail);
+                    await ses.SaveChangesAsync();
+                }
+
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    ses.Advanced.UseOptimisticConcurrency = true;
+                    IUserEmailStore<RavenUser> userEmailStore = new RavenUserStore<RavenUser>(ses);
+                    RavenUser ravenUser = await ses.LoadAsync<RavenUser>(userId2);
+                    await userEmailStore.SetEmailAsync(ravenUser, email);
+
+                    Assert.Throws<ConcurrencyException>(() =>
+                    {
+                        try
+                        {
+                            ses.SaveChangesAsync().Wait();
                         }
                         catch (AggregateException ex)
                         {
