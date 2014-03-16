@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AspNet.Identity.RavenDB.Entities.Entities
+namespace AspNet.Identity.RavenDB.Entities
 {
     /// <summary>
     /// As we need to make the e-mail confirmation happen only once, this should be 
@@ -8,8 +8,6 @@ namespace AspNet.Identity.RavenDB.Entities.Entities
     /// </summary>
     public class RavenUserEmailConfirmation
     {
-        const string KeyTemplate = "RavenUserEmailConfirmations/{0}/{1}";
-
         public RavenUserEmailConfirmation()
         {
         }
@@ -22,9 +20,9 @@ namespace AspNet.Identity.RavenDB.Entities.Entities
         public string Id { get; set; }
         public DateTimeOffset ConfirmedOn { get; set; }
 
-        public static string GenerateKey(string userName, string email)
+        internal static string GenerateKey(string userName, string email)
         {
-            return string.Format(KeyTemplate, userName, email);
+            return string.Format(Constants.RavenUserEmailConfirmationKeyTemplate, userName, email);
         }
     }
 }

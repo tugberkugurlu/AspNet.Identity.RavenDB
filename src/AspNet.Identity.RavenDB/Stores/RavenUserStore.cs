@@ -1,5 +1,4 @@
 ﻿using AspNet.Identity.RavenDB.Entities;
-using AspNet.Identity.RavenDB.Entities.Entities;
 using Microsoft.AspNet.Identity;
 using Raven.Client;
 using System;
