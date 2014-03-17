@@ -293,19 +293,14 @@ namespace AspNet.Identity.RavenDB.Stores
                 : default(TUser);
         }
 
-        public async Task<string> GetEmailAsync(TUser user)
+        public Task<string> GetEmailAsync(TUser user)
         {
             if (user == null)
             {
                 throw new ArgumentNullException("user");
             }
 
-            RavenUserEmail ravenUserEmail = await GetUserEmailAsync(user.Id)
-                .ConfigureAwait(false);
-
-            return (ravenUserEmail != null)
-                ? ravenUserEmail.Email
-                : null;
+            return Task.FromResult(user.Email);
         }
 
         public async Task<bool> GetEmailConfirmedAsync(TUser user)
@@ -315,13 +310,12 @@ namespace AspNet.Identity.RavenDB.Stores
                 throw new ArgumentNullException("user");
             }
 
-            RavenUserEmail ravenUserEmail = await GetUserEmailAsync(user.Id).ConfigureAwait(false);
-            if (ravenUserEmail == null)
+            if (user.Email == null)
             {
                 throw new InvalidOperationException("Cannot get the confirmation status of the e-mail because user doesn't have an e-mail.");
             }
 
-            RavenUserEmailConfirmation confirmation = await GetUserEmailConfirmationAsync(user.UserName, ravenUserEmail.Email)
+            RavenUserEmailConfirmation confirmation = await GetUserEmailConfirmationAsync(user.UserName, user.Email)
                 .ConfigureAwait(false);
 
             return confirmation != null;
@@ -332,6 +326,7 @@ namespace AspNet.Identity.RavenDB.Stores
             if (user == null) throw new ArgumentNullException("user");
             if (email == null) throw new ArgumentNullException("email");
 
+            user.Email = email;
             RavenUserEmail ravenUserEmail = new RavenUserEmail(email)
             {
                 UserId = user.Id
@@ -347,15 +342,14 @@ namespace AspNet.Identity.RavenDB.Stores
                 throw new ArgumentNullException("user");
             }
 
-            RavenUserEmail ravenUserEmail = await GetUserEmailAsync(user.Id).ConfigureAwait(false);
-            if (ravenUserEmail == null)
+            if (user.Email == null)
             {
                 throw new InvalidOperationException("Cannot set the confirmation status of the e-mail because user doesn't have an e-mail.");
             }
 
             if (confirmed)
             {
-                RavenUserEmailConfirmation confirmation = new RavenUserEmailConfirmation(user.UserName, ravenUserEmail.Email)
+                RavenUserEmailConfirmation confirmation = new RavenUserEmailConfirmation(user.UserName, user.Email)
                 {
                     ConfirmedOn = DateTimeOffset.UtcNow
                 };
@@ -364,7 +358,7 @@ namespace AspNet.Identity.RavenDB.Stores
             }
             else
             {
-                RavenUserEmailConfirmation ravenUserEmailConfirmation = await GetUserEmailConfirmationAsync(user.UserName, ravenUserEmail.Email).ConfigureAwait(false);
+                RavenUserEmailConfirmation ravenUserEmailConfirmation = await GetUserEmailConfirmationAsync(user.UserName, user.Email).ConfigureAwait(false);
                 if (ravenUserEmailConfirmation != null)
                 {
                     DocumentSession.Delete(ravenUserEmailConfirmation);
@@ -373,13 +367,6 @@ namespace AspNet.Identity.RavenDB.Stores
         }
 
         // privates
-
-        private Task<RavenUserEmail> GetUserEmailAsync(string userId)
-        {
-            return DocumentSession
-                .Query<RavenUserEmail>()
-                .FirstOrDefaultAsync(userEmail => userEmail.UserId == userId);
-        }
 
         private Task<RavenUserEmailConfirmation> GetUserEmailConfirmationAsync(string userName, string email)
         {
