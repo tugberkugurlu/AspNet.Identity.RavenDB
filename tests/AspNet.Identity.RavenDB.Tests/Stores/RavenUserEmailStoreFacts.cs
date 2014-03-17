@@ -318,5 +318,27 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 }
             }
         }
+
+        // SetEmailConfirmedAsync
+
+        [Fact]
+        public async Task SetEmailConfirmedAsync_With_Confirmed_Param_True_Should_Set_The_Email_As_Confirmed_If_Not_Confirmed_Already()
+        {
+        }
+
+        [Fact]
+        public async Task SetEmailConfirmedAsync_With_Confirmed_Param_False_Should_Set_The_Email_As_Not_Confirmed_If_Confirmed_Already()
+        {
+        }
+
+        [Fact]
+        public async Task SetEmailConfirmedAsync_Should_Throw_InvalidOperationException_If_User_Email_Property_Is_Not_Available()
+        {
+        }
+
+        [Fact]
+        public async Task SetEmailConfirmedAsync_Should_Throw_InvalidOperationException_If_User_Email_Property_Is_Available_But_UserEmail_Document_Not()
+        {
+        }
     }
 }
