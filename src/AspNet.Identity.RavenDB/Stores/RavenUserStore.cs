@@ -347,31 +347,40 @@ namespace AspNet.Identity.RavenDB.Stores
                 throw new InvalidOperationException("Cannot set the confirmation status of the e-mail because user doesn't have an e-mail.");
             }
 
+            RavenUserEmail userEmail = await GetUserEmailAsync(user.Email).ConfigureAwait(false);
+            if (userEmail == null)
+            {
+                throw new InvalidOperationException("Cannot set the confirmation status of the e-mail because user doesn't have an e-mail as RavenUserEmail document.");
+            }
+
             if (confirmed)
             {
-                RavenUserEmailConfirmation confirmation = new RavenUserEmailConfirmation(user.UserName, user.Email)
+                userEmail.ConfirmationRecord = new RavenUserEmailConfirmation
                 {
                     ConfirmedOn = DateTimeOffset.UtcNow
                 };
-
-                await DocumentSession.StoreAsync(confirmation).ConfigureAwait(false);
             }
             else
             {
-                RavenUserEmailConfirmation ravenUserEmailConfirmation = await GetUserEmailConfirmationAsync(user.UserName, user.Email).ConfigureAwait(false);
-                if (ravenUserEmailConfirmation != null)
-                {
-                    DocumentSession.Delete(ravenUserEmailConfirmation);
-                }
+                userEmail.ConfirmationRecord = null;
             }
         }
 
         // privates
 
-        private Task<RavenUserEmailConfirmation> GetUserEmailConfirmationAsync(string userName, string email)
+        private Task<RavenUserEmail> GetUserEmailAsync(string email)
         {
-            string keyToLookFor = RavenUserEmailConfirmation.GenerateKey(userName, email);
-            return DocumentSession.LoadAsync<RavenUserEmailConfirmation>(keyToLookFor);
+            string keyToLookFor = RavenUserEmail.GenerateKey(email);
+            return DocumentSession.LoadAsync<RavenUserEmail>(keyToLookFor);
+        }
+
+        private async Task<RavenUserEmailConfirmation> GetUserEmailConfirmationAsync(string userName, string email)
+        {
+            RavenUserEmail userEmail = await GetUserEmailAsync(email).ConfigureAwait(false);
+
+            return (userEmail != null)
+                ? userEmail.ConfirmationRecord
+                : null;
         }
     }
 }

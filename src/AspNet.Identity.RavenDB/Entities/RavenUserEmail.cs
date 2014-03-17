@@ -24,6 +24,8 @@
         public string UserId { get; set; }
         public string Email { get; set; }
 
+        public RavenUserEmailConfirmation ConfirmationRecord { get; set; }
+
         internal static string GenerateKey(string email)
         {
             return string.Format(Constants.RavenUserEmailKeyTemplate, email);

@@ -148,10 +148,10 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 {
                     RavenUser user = new RavenUser { Id = userId, UserName = userName, Email = email };
                     RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = userId };
-                    RavenUserEmailConfirmation userEmailConfirmation = new RavenUserEmailConfirmation(userName, email) { ConfirmedOn = DateTimeOffset.UtcNow };
+                    RavenUserEmailConfirmation userEmailConfirmation = new RavenUserEmailConfirmation { ConfirmedOn = DateTimeOffset.UtcNow };
+                    userEmail.ConfirmationRecord = userEmailConfirmation;
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
-                    await ses.StoreAsync(userEmailConfirmation);
                     await ses.SaveChangesAsync();
                 }
 
