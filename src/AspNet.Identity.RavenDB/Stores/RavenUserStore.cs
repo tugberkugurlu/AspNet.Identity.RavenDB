@@ -57,9 +57,9 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public Task<TUser> FindByIdAsync(string userId)
         {
-            if (string.IsNullOrWhiteSpace(userId))
+            if (userId == null)
             {
-                throw new ArgumentException("Input cannot be null, empty or white space", "userId");
+                throw new ArgumentNullException("userId");
             }
 
             return GetUser(userId);
@@ -67,9 +67,9 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public Task<TUser> FindByNameAsync(string userName)
         {
-            if (string.IsNullOrWhiteSpace(userName))
+            if (userName == null)
             {
-                throw new ArgumentException("Input cannot be null, empty or white space", "userName");
+                throw new ArgumentNullException("userName");
             }
 
             return GetUserByUserName(userName);
@@ -131,14 +131,8 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public Task AddLoginAsync(TUser user, UserLoginInfo login)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-            if (login == null)
-            {
-                throw new ArgumentNullException("login");
-            }
+            if (user == null) throw new ArgumentNullException("user");
+            if (login == null) throw new ArgumentNullException("login");
 
             user.Logins.Add(new RavenUserLogin(login));
             return Task.FromResult(0);
@@ -146,14 +140,8 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public Task RemoveLoginAsync(TUser user, UserLoginInfo login)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-            if (login == null)
-            {
-                throw new ArgumentNullException("login");
-            }
+            if (user == null) throw new ArgumentNullException("user");
+            if (login == null) throw new ArgumentNullException("login");
 
             RavenUserLogin userLogin = user.Logins
                 .FirstOrDefault(lgn => lgn.LoginProvider == login.LoginProvider && lgn.ProviderKey == login.ProviderKey);
@@ -180,14 +168,8 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public Task AddClaimAsync(TUser user, Claim claim)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-            if (claim == null)
-            {
-                throw new ArgumentNullException("claim");
-            }
+            if (user == null) throw new ArgumentNullException("user");
+            if (claim == null) throw new ArgumentNullException("claim");
 
             user.Claims.Add(new RavenUserClaim(claim));
             return Task.FromResult(0);
@@ -195,14 +177,8 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public Task RemoveClaimAsync(TUser user, Claim claim)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-            if (claim == null)
-            {
-                throw new ArgumentNullException("claim");
-            }
+            if (user == null) throw new ArgumentNullException("user");
+            if (claim == null) throw new ArgumentNullException("claim");
 
             RavenUserClaim userClaim = user.Claims
                 .FirstOrDefault(clm => clm.ClaimType == claim.Type && clm.ClaimValue == claim.Value);
@@ -243,6 +219,7 @@ namespace AspNet.Identity.RavenDB.Stores
             {
                 throw new ArgumentNullException("user");
             }
+
             user.PasswordHash = passwordHash;
             return Task.FromResult(0);
         }
@@ -290,7 +267,7 @@ namespace AspNet.Identity.RavenDB.Stores
             }
 
             user.IsTwoFactorEnabled = enabled;
-            return Task.FromResult<int>(0);
+            return Task.FromResult(0);
         }
 
         // IUserEmailStore
