@@ -80,6 +80,11 @@ namespace AspNet.Identity.RavenDB.Stores
         /// </remarks>
         public Task UpdateAsync(TUser user)
         {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
             return DocumentSession.SaveChangesAsync();
         }
 
@@ -110,6 +115,11 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public async Task<TUser> FindAsync(UserLoginInfo login)
         {
+            if (login == null)
+            {
+                throw new ArgumentNullException("login");
+            }
+
             IEnumerable<TUser> users = await DocumentSession.Query<TUser>()
                 .Where(usr => usr.Logins.Any(lgn => lgn.LoginProvider == login.LoginProvider && lgn.ProviderKey == login.ProviderKey))
                 .Take(1)
@@ -160,6 +170,11 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public Task<IList<Claim>> GetClaimsAsync(TUser user)
         {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
             return Task.FromResult<IList<Claim>>(user.Claims.Select(clm => new Claim(clm.ClaimType, clm.ClaimValue)).ToList());
         }
 
@@ -282,6 +297,11 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public async Task<TUser> FindByEmailAsync(string email)
         {
+            if (email == null)
+            {
+                throw new ArgumentNullException("email");
+            }
+
             string keyToLookFor = RavenUserEmail.GenerateKey(email);
             RavenUserEmail ravenUserEmail = await DocumentSession
                 .Include<RavenUserEmail, TUser>(usrEmail => usrEmail.UserId)
