@@ -214,16 +214,10 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 {
                     IUserEmailStore<RavenUser> userEmailStore = new RavenUserStore<RavenUser>(ses);
                     RavenUser ravenUser = await ses.LoadAsync<RavenUser>(userId);
-                    Assert.Throws<InvalidOperationException>(() =>
+                    
+                    await Assert.ThrowsAsync<InvalidOperationException>(async () => 
                     {
-                        try
-                        {
-                            bool isConfirmed = userEmailStore.GetEmailConfirmedAsync(ravenUser).Result;
-                        }
-                        catch (AggregateException ex)
-                        {
-                            throw ex.GetBaseException();
-                        }
+                        bool isConfirmed = await userEmailStore.GetEmailConfirmedAsync(ravenUser);
                     });
                 }
             }
@@ -298,16 +292,9 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                     RavenUser ravenUser = await ses.LoadAsync<RavenUser>(userId2);
                     await userEmailStore.SetEmailAsync(ravenUser, email);
 
-                    Assert.Throws<ConcurrencyException>(() =>
+                    await Assert.ThrowsAsync<ConcurrencyException>(async () =>
                     {
-                        try
-                        {
-                            ses.SaveChangesAsync().Wait();
-                        }
-                        catch (AggregateException ex)
-                        {
-                            throw ex.GetBaseException();
-                        }
+                        await ses.SaveChangesAsync();
                     });
                 }
 
