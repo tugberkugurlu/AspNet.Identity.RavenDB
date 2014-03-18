@@ -313,7 +313,7 @@ namespace AspNet.Identity.RavenDB.Stores
                 throw new InvalidOperationException("Cannot get the confirmation status of the e-mail because user doesn't have an e-mail.");
             }
 
-            RavenUserEmailConfirmation confirmation = await GetUserEmailConfirmationAsync(user.UserName, user.Email)
+            RavenUserEmailConfirmation confirmation = await GetUserEmailConfirmationAsync(user.Email)
                 .ConfigureAwait(false);
 
             return confirmation != null;
@@ -418,7 +418,7 @@ namespace AspNet.Identity.RavenDB.Stores
             return DocumentSession.LoadAsync<RavenUserPhoneNumber>(keyToLookFor);
         }
 
-        private async Task<RavenUserEmailConfirmation> GetUserEmailConfirmationAsync(string userName, string email)
+        private async Task<RavenUserEmailConfirmation> GetUserEmailConfirmationAsync(string email)
         {
             RavenUserEmail userEmail = await GetUserEmailAsync(email).ConfigureAwait(false);
 
