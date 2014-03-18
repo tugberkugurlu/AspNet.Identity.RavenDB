@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AspNet.Identity.RavenDB.Entities;
+﻿using AspNet.Identity.RavenDB.Entities;
 using AspNet.Identity.RavenDB.Stores;
 using Microsoft.AspNet.Identity;
 using Raven.Abstractions.Exceptions;
 using Raven.Client;
+using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace AspNet.Identity.RavenDB.Tests.Stores
@@ -416,6 +413,30 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         [Fact]
         public async Task SetEmailConfirmedAsync_Should_Throw_InvalidOperationException_If_User_Email_Property_Is_Available_But_UserEmail_Document_Not()
         {
+            const string userName = "Tugberk";
+            const string userId = "RavenUsers/1";
+            const string email = "tugberk@example.com";
+
+            using (IDocumentStore store = CreateEmbeddableStore())
+            {
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    RavenUser user = new RavenUser { Id = userId, UserName = userName, Email = email };
+                    await ses.StoreAsync(user);
+                    await ses.SaveChangesAsync();
+                }
+
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    IUserEmailStore<RavenUser> userEmailStore = new RavenUserStore<RavenUser>(ses);
+                    RavenUser ravenUser = await ses.LoadAsync<RavenUser>(userId);
+
+                    await Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                    {
+                        await userEmailStore.SetEmailConfirmedAsync(ravenUser, confirmed: true);
+                    });
+                }
+            }
         }
     }
 }
