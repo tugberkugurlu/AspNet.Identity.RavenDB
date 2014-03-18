@@ -10,7 +10,6 @@ namespace AspNet.Identity.RavenDB.Stores
     public abstract class RavenIdentityStore<TUser> : IDisposable where TUser : RavenUser
     {
         private readonly bool _disposeDocumentSession;
-        protected readonly bool EnsureEmailUniqueness;
         protected readonly bool EnsurePhoneNumberUniqueness;
         protected readonly IAsyncDocumentSession DocumentSession;
 
@@ -20,7 +19,6 @@ namespace AspNet.Identity.RavenDB.Stores
             if (userStoreProfile == null) throw new ArgumentNullException("userStoreProfile");
 
             DocumentSession = documentSession;
-            EnsureEmailUniqueness = userStoreProfile.EnsureEmailUniqueness;
             EnsurePhoneNumberUniqueness = userStoreProfile.EnsurePhoneNumberUniqueness;
             _disposeDocumentSession = disposeDocumentSession;
         }
