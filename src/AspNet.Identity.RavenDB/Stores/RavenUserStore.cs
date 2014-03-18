@@ -396,12 +396,47 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public Task SetPhoneNumberAsync(TUser user, string phoneNumber)
         {
-            throw new NotImplementedException();
+            if (user == null) throw new ArgumentNullException("user");
+            if (phoneNumber == null) throw new ArgumentNullException("phoneNumber");
+
+            user.PhoneNumber = phoneNumber;
+            RavenUserPhoneNumber ravenUserPhoneNumber = new RavenUserPhoneNumber(phoneNumber)
+            {
+                UserId = user.Id
+            };
+
+            return DocumentSession.StoreAsync(ravenUserPhoneNumber);
         }
 
-        public Task SetPhoneNumberConfirmedAsync(TUser user, bool confirmed)
+        public async Task SetPhoneNumberConfirmedAsync(TUser user, bool confirmed)
         {
-            throw new NotImplementedException();
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            if (user.PhoneNumber == null)
+            {
+                throw new InvalidOperationException("Cannot set the confirmation status of the phone number because user doesn't have a phone number.");
+            }
+
+            RavenUserPhoneNumber userPhoneNumber = await GetUserPhoneNumberAsync(user.Email).ConfigureAwait(false);
+            if (userPhoneNumber == null)
+            {
+                throw new InvalidOperationException("Cannot set the confirmation status of the phone number because user doesn't have a phone number as RavenUserPhoneNumber document.");
+            }
+
+            if (confirmed)
+            {
+                userPhoneNumber.ConfirmationRecord = new RavenUserPhoneNumberConfirmation
+                {
+                    ConfirmedOn = DateTimeOffset.UtcNow
+                };
+            }
+            else
+            {
+                userPhoneNumber.ConfirmationRecord = null;
+            }
         }
 
         // privates
