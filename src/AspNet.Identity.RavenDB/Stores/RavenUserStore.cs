@@ -17,6 +17,7 @@ namespace AspNet.Identity.RavenDB.Stores
         IQueryableUserStore<TUser>,
         IUserTwoFactorStore<TUser>,
         IUserEmailStore<TUser>,
+        IUserPhoneNumberStore<TUser>,
         IUserStore<TUser> where TUser : RavenUser
     {
         public RavenUserStore(IAsyncDocumentSession documentSession)
@@ -363,6 +364,46 @@ namespace AspNet.Identity.RavenDB.Stores
             }
         }
 
+        // IUserPhoneNumberStore
+
+        public Task<string> GetPhoneNumberAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult(user.PhoneNumber);
+        }
+
+        public async Task<bool> GetPhoneNumberConfirmedAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            if (user.PhoneNumber == null)
+            {
+                throw new InvalidOperationException("Cannot get the confirmation status of the phone number because user doesn't have a phone number.");
+            }
+
+            RavenUserPhoneNumberConfirmation confirmation = await GetUserPhoneNumberConfirmationAsync(user.PhoneNumber)
+                .ConfigureAwait(false);
+
+            return confirmation != null;
+        }
+
+        public Task SetPhoneNumberAsync(TUser user, string phoneNumber)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetPhoneNumberConfirmedAsync(TUser user, bool confirmed)
+        {
+            throw new NotImplementedException();
+        }
+
         // privates
 
         private Task<RavenUserEmail> GetUserEmailAsync(string email)
@@ -371,12 +412,27 @@ namespace AspNet.Identity.RavenDB.Stores
             return DocumentSession.LoadAsync<RavenUserEmail>(keyToLookFor);
         }
 
+        private Task<RavenUserPhoneNumber> GetUserPhoneNumberAsync(string phoneNumber)
+        {
+            string keyToLookFor = RavenUserPhoneNumber.GenerateKey(phoneNumber);
+            return DocumentSession.LoadAsync<RavenUserPhoneNumber>(keyToLookFor);
+        }
+
         private async Task<RavenUserEmailConfirmation> GetUserEmailConfirmationAsync(string userName, string email)
         {
             RavenUserEmail userEmail = await GetUserEmailAsync(email).ConfigureAwait(false);
 
             return (userEmail != null)
                 ? userEmail.ConfirmationRecord
+                : null;
+        }
+
+        private async Task<RavenUserPhoneNumberConfirmation> GetUserPhoneNumberConfirmationAsync(string phoneNumber)
+        {
+            RavenUserPhoneNumber userPhoneNumber = await GetUserPhoneNumberAsync(phoneNumber).ConfigureAwait(false);
+
+            return (userPhoneNumber != null)
+                ? userPhoneNumber.ConfirmationRecord
                 : null;
         }
     }
