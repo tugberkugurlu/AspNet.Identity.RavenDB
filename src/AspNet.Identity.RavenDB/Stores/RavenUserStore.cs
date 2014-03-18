@@ -25,6 +25,11 @@ namespace AspNet.Identity.RavenDB.Stores
         }
 
         public RavenUserStore(IAsyncDocumentSession documentSession, bool disposeDocumentSession)
+            : this(documentSession, disposeDocumentSession, DefaultRavenUserStoreProfile.Instance)
+        {
+        }
+
+        public RavenUserStore(IAsyncDocumentSession documentSession, bool disposeDocumentSession, IRavenUserStoreProfile userStoreProfile)
             : base(documentSession, disposeDocumentSession)
         {
         }
