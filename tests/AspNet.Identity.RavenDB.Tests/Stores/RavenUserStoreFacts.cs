@@ -33,6 +33,39 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         }
 
         [Fact]
+        public async Task CreateAsync_Should_Create_User_By_Putting_The_UserName_As_The_Key()
+        {
+            string userName = "Tugberk";
+
+            using (IDocumentStore store = CreateEmbeddableStore())
+            using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+            {
+                IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
+                await userStore.CreateAsync(new RavenUser { UserName = userName });
+
+                IUser user = (await ses.Query<RavenUser>()
+                    .Where(usr => usr.UserName == userName)
+                    .Take(1)
+                    .ToListAsync()
+                    .ConfigureAwait(false)).FirstOrDefault();
+
+                Assert.NotNull(user);
+                Assert.Equal(string.Concat(Constants.RavenUserKeyTemplate, "/", userName), user.Id);
+            }
+        }
+
+        [Fact]
+        public async Task CreateAsync_Should_Throw_InvalidOperationException_If_UserName_Is_Null()
+        {
+            using (IDocumentStore store = CreateEmbeddableStore())
+            using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+            {
+                IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
+                await Assert.ThrowsAsync<InvalidOperationException>(async () => await userStore.CreateAsync(new RavenUser()));
+            }
+        }
+
+        [Fact]
         public async Task Should_Retrieve_User_By_UserName()
         {
             string userName = "Tugberk";
