@@ -15,7 +15,7 @@ namespace AspNet.Identity.RavenDB.Stores
         IUserPasswordStore<TUser>,
         IUserSecurityStampStore<TUser>,
         IQueryableUserStore<TUser>,
-        IUserTwoFactorStore<TUser>,
+        IUserTwoFactorStore<TUser, string>,
         IUserEmailStore<TUser>,
         IUserPhoneNumberStore<TUser>,
         IUserStore<TUser> where TUser : RavenUser
