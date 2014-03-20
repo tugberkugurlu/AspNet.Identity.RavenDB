@@ -16,6 +16,7 @@ namespace AspNet.Identity.RavenDB.Stores
         IUserSecurityStampStore<TUser>,
         IQueryableUserStore<TUser>,
         IUserTwoFactorStore<TUser, string>,
+        IUserLockoutStore<TUser, string>,
         IUserEmailStore<TUser>,
         IUserPhoneNumberStore<TUser>,
         IUserStore<TUser> where TUser : RavenUser
@@ -443,6 +444,43 @@ namespace AspNet.Identity.RavenDB.Stores
             {
                 userPhoneNumber.ConfirmationRecord = null;
             }
+        }
+
+        // IUserLockoutStore
+
+        public Task<DateTimeOffset> GetLockoutEndDateAsync(TUser user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetLockoutEndDateAsync(TUser user, DateTimeOffset lockoutEnd)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> IncrementAccessFailedCountAsync(TUser user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ResetAccessFailedCountAsync(TUser user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> GetAccessFailedCountAsync(TUser user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> GetLockoutEnabledAsync(TUser user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SetLockoutEnabledAsync(TUser user, bool enabled)
+        {
+            throw new NotImplementedException();
         }
 
         // privates
