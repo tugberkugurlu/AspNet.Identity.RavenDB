@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.AspNet.Identity;
 
@@ -18,7 +19,11 @@ namespace AspNet.Identity.RavenDB.Entities
         public string PhoneNumber { get; set; }
         public string PasswordHash { get; set; }
         public string SecurityStamp { get; set; }
+        public int AccessFailedCount { get; set; }
+        public bool IsLockoutEnabled { get; set; }
+        public DateTimeOffset? LockoutEndDate { get; set; }
         public bool IsTwoFactorEnabled { get; set; }
+
 
         public ICollection<RavenUserClaim> Claims { get; set; }
         public ICollection<RavenUserLogin> Logins { get; set; }
