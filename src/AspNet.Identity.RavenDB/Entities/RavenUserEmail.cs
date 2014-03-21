@@ -26,7 +26,20 @@ namespace AspNet.Identity.RavenDB.Entities
         public string UserId { get; private set; }
         public string Email { get; private set; }
 
-        public RavenUserEmailConfirmation ConfirmationRecord { get; set; }
+        public RavenUserEmailConfirmation ConfirmationRecord { get; private set; }
+
+        internal void SetConfirmed()
+        {
+            if (ConfirmationRecord == null)
+            {
+                ConfirmationRecord = new RavenUserEmailConfirmation();
+            }
+        }
+
+        internal void SetUnconfirmed()
+        {
+            ConfirmationRecord = null;
+        }
 
         internal static string GenerateKey(string email)
         {

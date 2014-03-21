@@ -356,14 +356,11 @@ namespace AspNet.Identity.RavenDB.Stores
 
             if (confirmed)
             {
-                userEmail.ConfirmationRecord = new RavenUserEmailConfirmation
-                {
-                    ConfirmedOn = DateTimeOffset.UtcNow
-                };
+                userEmail.SetConfirmed();
             }
             else
             {
-                userEmail.ConfirmationRecord = null;
+                userEmail.SetUnconfirmed();
             }
         }
 

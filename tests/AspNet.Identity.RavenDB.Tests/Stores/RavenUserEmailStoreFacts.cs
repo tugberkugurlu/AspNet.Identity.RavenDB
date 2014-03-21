@@ -144,8 +144,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 {
                     RavenUser user = new RavenUser(userName) { Email = email };
                     RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
-                    RavenUserEmailConfirmation userEmailConfirmation = new RavenUserEmailConfirmation { ConfirmedOn = DateTimeOffset.UtcNow };
-                    userEmail.ConfirmationRecord = userEmailConfirmation;
+                    userEmail.SetConfirmed();
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
                     await ses.SaveChangesAsync();
@@ -353,7 +352,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 {
                     RavenUser user = new RavenUser(userName) { Email = email };
                     RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
-                    userEmail.ConfirmationRecord = new RavenUserEmailConfirmation { ConfirmedOn = DateTimeOffset.UtcNow };
+                    userEmail.SetConfirmed();
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
                     await ses.SaveChangesAsync();
