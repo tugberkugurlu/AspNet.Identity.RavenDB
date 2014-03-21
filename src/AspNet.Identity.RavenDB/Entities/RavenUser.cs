@@ -11,12 +11,13 @@ namespace AspNet.Identity.RavenDB.Entities
         {
             if (userName == null) throw new ArgumentNullException("userName");
 
-            Id = string.Concat(Constants.RavenUserKeyTemplate, "/", UserName);
+            UserName = userName;
+            Id = string.Format(Constants.RavenUserKeyTemplate, UserName);
             Claims = new Collection<RavenUserClaim>();
             Logins = new Collection<RavenUserLogin>();
         }
 
-        public string Id { get; protected set; }
+        public string Id { get; private set; }
         public string UserName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }

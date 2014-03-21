@@ -25,7 +25,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
                     RavenUser user = new RavenUser(userName) { Email = email };
-                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = userId };
+                    RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
                     await ses.SaveChangesAsync();
@@ -55,7 +55,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
                     RavenUser user = new RavenUser(userName) { Email = email };
-                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = user.Id };
+                    RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
                     await ses.SaveChangesAsync();
@@ -85,7 +85,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
                     RavenUser user = new RavenUser(userName) { Email = email };
-                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = user.Id };
+                    RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
                     await ses.SaveChangesAsync();
@@ -107,13 +107,13 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task GetEmailAsync_Should_Return_Null_If_User_Email_Is_Not_Available()
         {
             const string userName = "Tugberk";
-            const string userId = "RavenUsers/1";
+            const string userId = "RavenUsers/Tugberk";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { Id = userId, UserName = userName };
+                    RavenUser user = new RavenUser(userName);
                     await ses.StoreAsync(user);
                     await ses.SaveChangesAsync();
                 }
@@ -135,15 +135,15 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task GetEmailConfirmedAsync_Should_Return_True_If_Email_Confirmed()
         {
             const string userName = "Tugberk";
-            const string userId = "RavenUsers/1";
+            const string userId = "RavenUsers/Tugberk";
             const string email = "tugberk@example.com";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { Id = userId, UserName = userName, Email = email };
-                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = userId };
+                    RavenUser user = new RavenUser(userName) { Email = email };
+                    RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     RavenUserEmailConfirmation userEmailConfirmation = new RavenUserEmailConfirmation { ConfirmedOn = DateTimeOffset.UtcNow };
                     userEmail.ConfirmationRecord = userEmailConfirmation;
                     await ses.StoreAsync(user);
@@ -166,15 +166,15 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task GetEmailConfirmedAsync_Should_Return_False_If_Email_Is_Not_Confirmed()
         {
             const string userName = "Tugberk";
-            const string userId = "RavenUsers/1";
+            const string userId = "RavenUsers/Tugberk";
             const string email = "tugberk@example.com";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { Id = userId, UserName = userName, Email = email };
-                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = userId };
+                    RavenUser user = new RavenUser(userName) { Email = email };
+                    RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
                     await ses.SaveChangesAsync();
@@ -195,13 +195,13 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task GetEmailConfirmedAsync_Should_Throw_InvalidOperationException_If_Email_Is_Not_Available()
         {
             const string userName = "Tugberk";
-            const string userId = "RavenUsers/1";
+            const string userId = "RavenUsers/Tugberk";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { Id = userId, UserName = userName };
+                    RavenUser user = new RavenUser(userName) { UserName = userName };
                     await ses.StoreAsync(user);
                     await ses.SaveChangesAsync();
                 }
@@ -225,14 +225,14 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task SetEmailAsync_Should_Set_The_Email_Correctly()
         {
             const string userName = "Tugberk";
-            const string userId = "RavenUsers/1";
+            const string userId = "RavenUsers/Tugberk";
             const string emailToSave = "tugberk@example.com";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { Id = userId, UserName = userName };
+                    RavenUser user = new RavenUser(userName) { UserName = userName };
                     await ses.StoreAsync(user);
                     await ses.SaveChangesAsync();
                 }
@@ -263,18 +263,17 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task SetEmailAsync_Should_Set_Email_And_SaveChangesAsync_Should_Throw_ConcurrencyException_If_The_Email_Already_Exists()
         {
             const string userName = "Tugberk";
-            const string userId = "RavenUsers/1";
             const string email = "tugberk@example.com";
             const string userName2 = "Tugberk2";
-            const string userId2 = "RavenUsers/2";
+            const string userId2 = "RavenUsers/Tugberk2";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { Id = userId, UserName = userName, Email = email };
-                    RavenUser user2 = new RavenUser { Id = userId2, UserName = userName2 };
-                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = userId };
+                    RavenUser user = new RavenUser(userName) { UserName = userName, Email = email };
+                    RavenUser user2 = new RavenUser(userName2);
+                    RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(user2);
                     await ses.StoreAsync(userEmail);
@@ -308,15 +307,15 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task SetEmailConfirmedAsync_With_Confirmed_Param_True_Should_Set_The_Email_As_Confirmed_If_Not_Confirmed_Already()
         {
             const string userName = "Tugberk";
-            const string userId = "RavenUsers/1";
+            const string userId = "RavenUsers/Tugberk";
             const string email = "tugberk@example.com";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { Id = userId, UserName = userName, Email = email };
-                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = userId };
+                    RavenUser user = new RavenUser(userName) { UserName = userName, Email = email };
+                    RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
                     await ses.SaveChangesAsync();
@@ -345,15 +344,15 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task SetEmailConfirmedAsync_With_Confirmed_Param_False_Should_Set_The_Email_As_Not_Confirmed_If_Confirmed_Already()
         {
             const string userName = "Tugberk";
-            const string userId = "RavenUsers/1";
+            const string userId = "RavenUsers/Tugberk";
             const string email = "tugberk@example.com";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { Id = userId, UserName = userName, Email = email };
-                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = userId };
+                    RavenUser user = new RavenUser(userName) { Email = email };
+                    RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     userEmail.ConfirmationRecord = new RavenUserEmailConfirmation { ConfirmedOn = DateTimeOffset.UtcNow };
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
@@ -382,15 +381,15 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task SetEmailConfirmedAsync_Should_Throw_InvalidOperationException_If_User_Email_Property_Is_Not_Available()
         {
             const string userName = "Tugberk";
-            const string userId = "RavenUsers/1";
+            const string userId = "RavenUsers/Tugberk";
             const string email = "tugberk@example.com";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { Id = userId, UserName = userName };
-                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = userId };
+                    RavenUser user = new RavenUser(userName);
+                    RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
                     await ses.SaveChangesAsync();
@@ -413,14 +412,14 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task SetEmailConfirmedAsync_Should_Throw_InvalidOperationException_If_User_Email_Property_Is_Available_But_UserEmail_Document_Not()
         {
             const string userName = "Tugberk";
-            const string userId = "RavenUsers/1";
+            const string userId = "RavenUsers/Tugberk";
             const string email = "tugberk@example.com";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { Id = userId, UserName = userName, Email = email };
+                    RavenUser user = new RavenUser(userName) { Email = email };
                     await ses.StoreAsync(user);
                     await ses.SaveChangesAsync();
                 }

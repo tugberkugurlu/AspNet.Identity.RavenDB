@@ -93,7 +93,6 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task RemoveClaimAsync_Should_Remove_Claim_From_The_User_Claims_Collection()
         {
             string userName = "Tugberk";
-            string userId = "RavenUsers/1";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             using(IAsyncDocumentSession ses = store.OpenAsyncSession())

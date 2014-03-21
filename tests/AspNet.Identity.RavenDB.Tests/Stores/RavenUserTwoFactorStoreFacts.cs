@@ -43,7 +43,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             {
                 const string userName = "Tugberk";
-                const string userId = "RavenUsers/1";
+                const string userId = "RavenUsers/Tugberk";
 
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {

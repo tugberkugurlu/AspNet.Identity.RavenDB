@@ -331,10 +331,7 @@ namespace AspNet.Identity.RavenDB.Stores
             if (email == null) throw new ArgumentNullException("email");
 
             user.Email = email;
-            RavenUserEmail ravenUserEmail = new RavenUserEmail(email)
-            {
-                UserId = user.Id
-            };
+            RavenUserEmail ravenUserEmail = new RavenUserEmail(email, user.Id);
 
             return DocumentSession.StoreAsync(ravenUserEmail);
         }

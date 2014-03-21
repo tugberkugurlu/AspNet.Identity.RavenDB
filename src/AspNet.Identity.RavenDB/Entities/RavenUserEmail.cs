@@ -1,4 +1,6 @@
-﻿namespace AspNet.Identity.RavenDB.Entities
+﻿using System;
+
+namespace AspNet.Identity.RavenDB.Entities
 {
     /// <summary>
     /// Represents the user's e-mail address. This is stored in a seperate document as
@@ -10,19 +12,19 @@
     /// </remarks>
     public class RavenUserEmail
     {
-        public RavenUserEmail()
+        public RavenUserEmail(string email, string userId)
         {
-        }
+            if (email == null) throw new ArgumentNullException("email");
+            if (userId == null) throw new ArgumentNullException("userId");
 
-        public RavenUserEmail(string email)
-        {
             Id = GenerateKey(email);
+            UserId = userId;
             Email = email;
         }
 
-        public string Id { get; set; }
-        public string UserId { get; set; }
-        public string Email { get; set; }
+        public string Id { get; private set; }
+        public string UserId { get; private set; }
+        public string Email { get; private set; }
 
         public RavenUserEmailConfirmation ConfirmationRecord { get; set; }
 

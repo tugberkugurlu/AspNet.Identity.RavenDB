@@ -50,7 +50,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                     .ConfigureAwait(false)).FirstOrDefault();
 
                 Assert.NotNull(user);
-                Assert.Equal(string.Concat(Constants.RavenUserKeyTemplate, "/", userName), user.Id);
+                Assert.Equal(string.Format(Constants.RavenUserKeyTemplate, userName), user.Id);
             }
         }
 
@@ -96,13 +96,13 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task Should_Retrieve_User_By_UserId()
         {
             string userName = "Tugberk";
-            string userId = "RavenUser/2";
+            string userId = "RavenUsers/Tugberk";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
                 IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
-                await ses.StoreAsync(new RavenUser { Id = userId, UserName = userName });
+                await ses.StoreAsync(new RavenUser(userName));
                 await ses.SaveChangesAsync();
 
                 IUser user = await userStore.FindByIdAsync(userId);

@@ -74,7 +74,7 @@ namespace AspNet.Identity.RavenDB.Sample.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser() { UserName = model.UserName };
+                var user = new ApplicationUser(model.UserName);
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -261,7 +261,7 @@ namespace AspNet.Identity.RavenDB.Sample.Mvc.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser() { UserName = model.UserName };
+                var user = new ApplicationUser(model.UserName);
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
