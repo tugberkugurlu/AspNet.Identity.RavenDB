@@ -55,9 +55,8 @@
     </Compile>
     <Compile Include="Constants.cs" />
     <Compile Include="Entities\RavenUserEmail.cs" />
-    <Compile Include="Entities\RavenUserEmailConfirmation.cs" />
+    <Compile Include="Entities\ConfirmationRecord.cs" />
     <Compile Include="Entities\RavenUserPhoneNumber.cs" />
-    <Compile Include="Entities\RavenUserPhoneNumberConfirmation.cs" />
     <Compile Include="Stores\RavenIdentityStore.cs" />
     <Compile Include="Stores\RavenUserStore.cs" />
     <Compile Include="Entities\RavenUserClaim.cs" />

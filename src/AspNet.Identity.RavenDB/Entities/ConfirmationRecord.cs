@@ -2,9 +2,9 @@
 
 namespace AspNet.Identity.RavenDB.Entities
 {
-    public class RavenUserEmailConfirmation
+    public class ConfirmationRecord
     {
-        public RavenUserEmailConfirmation()
+        public ConfirmationRecord()
         {
             ConfirmedOn = DateTimeOffset.UtcNow;
         }

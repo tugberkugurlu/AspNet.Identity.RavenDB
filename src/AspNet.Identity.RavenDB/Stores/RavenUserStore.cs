@@ -319,7 +319,7 @@ namespace AspNet.Identity.RavenDB.Stores
                 throw new InvalidOperationException("Cannot get the confirmation status of the e-mail because user doesn't have an e-mail.");
             }
 
-            RavenUserEmailConfirmation confirmation = await GetUserEmailConfirmationAsync(user.Email)
+            ConfirmationRecord confirmation = await GetUserEmailConfirmationAsync(user.Email)
                 .ConfigureAwait(false);
 
             return confirmation != null;
@@ -388,7 +388,7 @@ namespace AspNet.Identity.RavenDB.Stores
                 throw new InvalidOperationException("Cannot get the confirmation status of the phone number because user doesn't have a phone number.");
             }
 
-            RavenUserPhoneNumberConfirmation confirmation = await GetUserPhoneNumberConfirmationAsync(user.PhoneNumber)
+            ConfirmationRecord confirmation = await GetUserPhoneNumberConfirmationAsync(user.PhoneNumber)
                 .ConfigureAwait(false);
 
             return confirmation != null;
@@ -400,10 +400,7 @@ namespace AspNet.Identity.RavenDB.Stores
             if (phoneNumber == null) throw new ArgumentNullException("phoneNumber");
 
             user.PhoneNumber = phoneNumber;
-            RavenUserPhoneNumber ravenUserPhoneNumber = new RavenUserPhoneNumber(phoneNumber)
-            {
-                UserId = user.Id
-            };
+            RavenUserPhoneNumber ravenUserPhoneNumber = new RavenUserPhoneNumber(phoneNumber, user.Id);
 
             return DocumentSession.StoreAsync(ravenUserPhoneNumber);
         }
@@ -428,14 +425,11 @@ namespace AspNet.Identity.RavenDB.Stores
 
             if (confirmed)
             {
-                userPhoneNumber.ConfirmationRecord = new RavenUserPhoneNumberConfirmation
-                {
-                    ConfirmedOn = DateTimeOffset.UtcNow
-                };
+                userPhoneNumber.SetConfirmed();
             }
             else
             {
-                userPhoneNumber.ConfirmationRecord = null;
+                userPhoneNumber.SetUnconfirmed();
             }
         }
 
@@ -528,7 +522,7 @@ namespace AspNet.Identity.RavenDB.Stores
             return DocumentSession.LoadAsync<RavenUserPhoneNumber>(keyToLookFor);
         }
 
-        private async Task<RavenUserEmailConfirmation> GetUserEmailConfirmationAsync(string email)
+        private async Task<ConfirmationRecord> GetUserEmailConfirmationAsync(string email)
         {
             RavenUserEmail userEmail = await GetUserEmailAsync(email).ConfigureAwait(false);
 
@@ -537,7 +531,7 @@ namespace AspNet.Identity.RavenDB.Stores
                 : null;
         }
 
-        private async Task<RavenUserPhoneNumberConfirmation> GetUserPhoneNumberConfirmationAsync(string phoneNumber)
+        private async Task<ConfirmationRecord> GetUserPhoneNumberConfirmationAsync(string phoneNumber)
         {
             RavenUserPhoneNumber userPhoneNumber = await GetUserPhoneNumberAsync(phoneNumber).ConfigureAwait(false);
 
