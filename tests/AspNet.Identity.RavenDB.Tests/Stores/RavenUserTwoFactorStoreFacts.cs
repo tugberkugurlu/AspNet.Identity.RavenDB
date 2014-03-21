@@ -15,11 +15,11 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             {
                 const string userName = "Tugberk";
-                const string userId = "RavenUsers/1";
+                const string userId = "RavenUsers/Tugberk";
 
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { Id = userId, UserName = userName, IsTwoFactorEnabled = true };
+                    RavenUser user = new RavenUser(userName) { IsTwoFactorEnabled = true };
                     await ses.StoreAsync(user);
                     await ses.SaveChangesAsync();
                 }
@@ -47,7 +47,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
 
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { Id = userId, UserName = userName, IsTwoFactorEnabled = false };
+                    RavenUser user = new RavenUser(userName) { IsTwoFactorEnabled = false };
                     await ses.StoreAsync(user);
                     await ses.SaveChangesAsync();
                 }

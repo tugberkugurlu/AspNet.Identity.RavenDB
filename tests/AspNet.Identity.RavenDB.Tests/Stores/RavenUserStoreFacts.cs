@@ -20,7 +20,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
                 IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
-                await userStore.CreateAsync(new RavenUser { UserName = userName });
+                await userStore.CreateAsync(new RavenUser(userName));
 
                 IUser user = (await ses.Query<RavenUser>()
                     .Where(usr => usr.UserName == userName)
@@ -41,7 +41,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
                 IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
-                await userStore.CreateAsync(new RavenUser { UserName = userName });
+                await userStore.CreateAsync(new RavenUser(userName));
 
                 IUser user = (await ses.Query<RavenUser>()
                     .Where(usr => usr.UserName == userName)
@@ -55,17 +55,6 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         }
 
         [Fact]
-        public async Task CreateAsync_Should_Throw_InvalidOperationException_If_UserName_Is_Null()
-        {
-            using (IDocumentStore store = CreateEmbeddableStore())
-            using (IAsyncDocumentSession ses = store.OpenAsyncSession())
-            {
-                IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
-                await Assert.ThrowsAsync<InvalidOperationException>(async () => await userStore.CreateAsync(new RavenUser()));
-            }
-        }
-
-        [Fact]
         public async Task Should_Retrieve_User_By_UserName()
         {
             string userName = "Tugberk";
@@ -74,7 +63,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
                 IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
-                await ses.StoreAsync(new RavenUser { UserName = userName });
+                await ses.StoreAsync(new RavenUser(userName));
                 await ses.SaveChangesAsync();
 
                 IUser user = await userStore.FindByNameAsync(userName);
@@ -94,7 +83,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
                 IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
-                await ses.StoreAsync(new RavenUser { UserName = userName });
+                await ses.StoreAsync(new RavenUser(userName));
                 await ses.SaveChangesAsync();
 
                 IUser user = await userStore.FindByNameAsync(nonExistingUserName);

@@ -58,7 +58,6 @@ namespace AspNet.Identity.RavenDB.Stores
                 throw new InvalidOperationException("Cannot create user as the 'UserName' property is null on user parameter.");
             }
 
-            user.Id = string.Concat(Constants.RavenUserKeyTemplate, "/", user.UserName);
             await DocumentSession.StoreAsync(user).ConfigureAwait(false);
             await DocumentSession.SaveChangesAsync().ConfigureAwait(false);
         }

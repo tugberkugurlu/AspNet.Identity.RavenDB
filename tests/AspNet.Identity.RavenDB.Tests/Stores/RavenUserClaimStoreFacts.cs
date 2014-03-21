@@ -16,7 +16,6 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task GetUserClaims_Should_Retrieve_Correct_Claims_For_User()
         {
             string userName = "Tugberk";
-            string userId = "RavenUsers/1";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
@@ -27,11 +26,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                     new RavenUserClaim { ClaimType = "Scope", ClaimValue = "Read" },
                     new RavenUserClaim { ClaimType = "Scope", ClaimValue = "Write" }
                 };
-                RavenUser user = new RavenUser
-                {
-                    Id = userId,
-                    UserName = userName
-                };
+                RavenUser user = new RavenUser(userName);
 
                 foreach (var claim in claims)
                 {
@@ -53,17 +48,12 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task GetUserClaims_Should_Not_Return_Null_If_User_Has_No_Claims()
         {
             string userName = "Tugberk";
-            string userId = "RavenUsers/1";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
                 IUserClaimStore<RavenUser> userClaimStore = new RavenUserStore<RavenUser>(ses, false);
-                RavenUser user = new RavenUser
-                {
-                    Id = userId,
-                    UserName = userName
-                };
+                RavenUser user = new RavenUser(userName);
 
                 await ses.StoreAsync(user);
                 await ses.SaveChangesAsync();
@@ -80,17 +70,12 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task AddClaimAsync_Should_Add_The_Claim_Into_The_User_Claims_Collection()
         {
             string userName = "Tugberk";
-            string userId = "RavenUsers/1";
 
             using (IDocumentStore store = base.CreateEmbeddableStore())
             using(IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
                 IUserClaimStore<RavenUser> userClaimStore = new RavenUserStore<RavenUser>(ses, false);
-                RavenUser user = new RavenUser
-                {
-                    Id = userId,
-                    UserName = userName
-                };
+                RavenUser user = new RavenUser(userName);
 
                 await ses.StoreAsync(user);
                 await ses.SaveChangesAsync();
@@ -115,11 +100,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             {
                 // Arrange
                 IUserClaimStore<RavenUser> userClaimStore = new RavenUserStore<RavenUser>(ses, false);
-                RavenUser user = new RavenUser
-                {
-                    Id = userId,
-                    UserName = userName
-                };
+                RavenUser user = new RavenUser(userName);
 
                 Claim claimToAddAndRemove = new Claim(ClaimTypes.Role, "Customer");
                 user.Claims.Add(new RavenUserClaim(claimToAddAndRemove));

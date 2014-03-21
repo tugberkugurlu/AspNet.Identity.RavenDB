@@ -18,8 +18,8 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
 
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { UserName = userName, IsTwoFactorEnabled = false };
-                    RavenUser userToSearch = new RavenUser { UserName = userNameToSearch, IsTwoFactorEnabled = false };
+                    RavenUser user = new RavenUser(userName) { IsTwoFactorEnabled = false };
+                    RavenUser userToSearch = new RavenUser(userNameToSearch) { IsTwoFactorEnabled = false };
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userToSearch);
                     await ses.SaveChangesAsync();

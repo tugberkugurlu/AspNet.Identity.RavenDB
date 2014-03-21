@@ -17,14 +17,14 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task FindByEmailAsync_Should_Return_The_Correct_User_If_Available()
         {
             const string userName = "Tugberk";
-            const string userId = "RavenUsers/1";
+            const string userId = "RavenUsers/Tugberk";
             const string email = "tugberk@example.com";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { Id = userId, UserName = userName, Email = email };
+                    RavenUser user = new RavenUser(userName) { Email = email };
                     RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = userId };
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
@@ -47,7 +47,6 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task FindByEmailAsync_Should_Return_Null_If_User_Is_Not_Available()
         {
             const string userName = "Tugberk";
-            const string userId = "RavenUsers/1";
             const string email = "tugberk@example.com";
             const string emailToLookFor = "foobar@example.com";
 
@@ -55,8 +54,8 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { Id = userId, UserName = userName, Email = email };
-                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = userId };
+                    RavenUser user = new RavenUser(userName) { Email = email };
+                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = user.Id };
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
                     await ses.SaveChangesAsync();
@@ -78,15 +77,15 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         public async Task GetEmailAsync_Should_Return_User_Email_If_Available()
         {
             const string userName = "Tugberk";
-            const string userId = "RavenUsers/1";
+            const string userId = "RavenUsers/Tugberk";
             const string email = "tugberk@example.com";
 
             using (IDocumentStore store = CreateEmbeddableStore())
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser { Id = userId, UserName = userName, Email = email };
-                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = userId };
+                    RavenUser user = new RavenUser(userName) { Email = email };
+                    RavenUserEmail userEmail = new RavenUserEmail(email) { UserId = user.Id };
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
                     await ses.SaveChangesAsync();

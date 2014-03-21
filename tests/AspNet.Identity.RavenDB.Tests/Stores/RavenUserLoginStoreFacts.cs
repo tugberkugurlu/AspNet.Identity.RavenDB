@@ -22,7 +22,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
                 IUserLoginStore<RavenUser, string> userLoginStore = new RavenUserStore<RavenUser>(ses);
-                RavenUser user = new RavenUser { Id = "RavenUsers/1", UserName = userName };
+                RavenUser user = new RavenUser(userName);
                 await ses.StoreAsync(user);
                 await ses.SaveChangesAsync();
 
