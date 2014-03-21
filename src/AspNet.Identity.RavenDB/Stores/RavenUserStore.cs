@@ -15,7 +15,8 @@ namespace AspNet.Identity.RavenDB.Stores
         IUserPasswordStore<TUser>,
         IUserSecurityStampStore<TUser>,
         IQueryableUserStore<TUser>,
-        IUserTwoFactorStore<TUser>,
+        IUserTwoFactorStore<TUser, string>,
+        IUserLockoutStore<TUser, string>,
         IUserEmailStore<TUser>,
         IUserPhoneNumberStore<TUser>,
         IUserStore<TUser> where TUser : RavenUser
@@ -443,6 +444,81 @@ namespace AspNet.Identity.RavenDB.Stores
             {
                 userPhoneNumber.ConfirmationRecord = null;
             }
+        }
+
+        // IUserLockoutStore
+
+        public Task<DateTimeOffset> GetLockoutEndDateAsync(TUser user)
+        {
+            if (user == null) throw new ArgumentNullException("user");
+            if (user.LockoutEndDate == null) throw new InvalidOperationException("LockoutEndDate has no value.");
+
+            return Task.FromResult(user.LockoutEndDate.Value);
+        }
+
+        public Task SetLockoutEndDateAsync(TUser user, DateTimeOffset lockoutEnd)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.LockoutEndDate = lockoutEnd;
+            return Task.FromResult(0);
+        }
+
+        public Task<int> IncrementAccessFailedCountAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            // NOTE: Not confortable to do this like below but this will work out for the intended scenario.
+            user.AccessFailedCount++;
+            return Task.FromResult(0);
+        }
+
+        public Task ResetAccessFailedCountAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.AccessFailedCount = 0;
+            return Task.FromResult(0);
+        }
+
+        public Task<int> GetAccessFailedCountAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult(user.AccessFailedCount);
+        }
+
+        public Task<bool> GetLockoutEnabledAsync(TUser user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            return Task.FromResult(user.IsLockoutEnabled);
+        }
+
+        public Task SetLockoutEnabledAsync(TUser user, bool enabled)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user");
+            }
+
+            user.IsLockoutEnabled = enabled;
+            return Task.FromResult(0);
         }
 
         // privates
