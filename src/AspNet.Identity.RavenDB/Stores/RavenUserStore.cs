@@ -110,55 +110,55 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
+            if (user == null) throw new ArgumentNullException("user");
 
             return Task.FromResult<IList<UserLoginInfo>>(
-                user.Logins.Select(login => new UserLoginInfo(login.LoginProvider, login.ProviderKey)).ToList()
-            );
+                user.Logins.Select(login => 
+                    new UserLoginInfo(login.LoginProvider, login.ProviderKey)).ToList());
         }
 
         public async Task<TUser> FindAsync(UserLoginInfo login)
         {
-            if (login == null)
-            {
-                throw new ArgumentNullException("login");
-            }
+            if (login == null) throw new ArgumentNullException("login");
 
-            IEnumerable<TUser> users = await DocumentSession.Query<TUser>()
-                .Where(usr => usr.Logins.Any(lgn => lgn.LoginProvider == login.LoginProvider && lgn.ProviderKey == login.ProviderKey))
-                .Take(1)
-                .ToListAsync()
+            string keyToLookFor = RavenUserLogin.GenerateKey(login.LoginProvider, login.ProviderKey);
+            RavenUserLogin ravenUserLogin = await DocumentSession
+                .Include<RavenUserLogin, TUser>(usrLogin => usrLogin.UserId)
+                .LoadAsync(keyToLookFor)
                 .ConfigureAwait(false);
 
-            return users.FirstOrDefault();
+            return (ravenUserLogin != null)
+                ? await DocumentSession.LoadAsync<TUser>(ravenUserLogin.UserId).ConfigureAwait(false)
+                : default(TUser);
         }
 
-        public Task AddLoginAsync(TUser user, UserLoginInfo login)
+        public async Task AddLoginAsync(TUser user, UserLoginInfo login)
         {
             if (user == null) throw new ArgumentNullException("user");
             if (login == null) throw new ArgumentNullException("login");
 
-            user.Logins.Add(new RavenUserLogin(login));
-            return Task.FromResult(0);
+            RavenUserLogin ravenUserLogin = new RavenUserLogin(user.Id, login);
+            await DocumentSession.StoreAsync(ravenUserLogin).ConfigureAwait(false);
+            user.Logins.Add(ravenUserLogin);
         }
 
-        public Task RemoveLoginAsync(TUser user, UserLoginInfo login)
+        public async Task RemoveLoginAsync(TUser user, UserLoginInfo login)
         {
             if (user == null) throw new ArgumentNullException("user");
             if (login == null) throw new ArgumentNullException("login");
 
-            RavenUserLogin userLogin = user.Logins
-                .FirstOrDefault(lgn => lgn.LoginProvider == login.LoginProvider && lgn.ProviderKey == login.ProviderKey);
+            string keyToLookFor = RavenUserLogin.GenerateKey(login.LoginProvider, login.ProviderKey);
+            RavenUserLogin ravenUserLogin = await DocumentSession.LoadAsync<RavenUserLogin>(keyToLookFor).ConfigureAwait(false);
+            if (ravenUserLogin != null)
+            {
+                DocumentSession.Delete(ravenUserLogin);
+            }
 
+            RavenUserLogin userLogin = user.Logins.FirstOrDefault(lgn => lgn.Id.Equals(keyToLookFor, StringComparison.InvariantCultureIgnoreCase));
             if (userLogin != null)
             {
                 user.Logins.Remove(userLogin);
             }
-
-            return Task.FromResult(0);
         }
 
         // IUserClaimStore
