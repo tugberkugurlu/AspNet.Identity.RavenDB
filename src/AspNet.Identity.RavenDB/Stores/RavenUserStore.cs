@@ -268,12 +268,17 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public Task SetTwoFactorEnabledAsync(TUser user, bool enabled)
         {
-            if (user == null)
+            if (user == null) throw new ArgumentNullException("user");
+
+            if (enabled) 
             {
-                throw new ArgumentNullException("user");
+                user.EnableTwoFactorAuthentication();
+            }
+            else
+            {
+                user.DisableTwoFactorAuthentication();
             }
 
-            user.IsTwoFactorEnabled = enabled;
             return Task.FromResult(0);
         }
 
@@ -330,7 +335,7 @@ namespace AspNet.Identity.RavenDB.Stores
             if (user == null) throw new ArgumentNullException("user");
             if (email == null) throw new ArgumentNullException("email");
 
-            user.Email = email;
+            user.SetEmail(email);
             RavenUserEmail ravenUserEmail = new RavenUserEmail(email, user.Id);
 
             return _documentSession.StoreAsync(ravenUserEmail);

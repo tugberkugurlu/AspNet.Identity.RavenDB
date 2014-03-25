@@ -19,7 +19,8 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
 
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser(userName) { IsTwoFactorEnabled = true };
+                    RavenUser user = new RavenUser(userName);
+                    user.EnableTwoFactorAuthentication();
                     await ses.StoreAsync(user);
                     await ses.SaveChangesAsync();
                 }
@@ -47,7 +48,8 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
 
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser(userName) { IsTwoFactorEnabled = false };
+                    RavenUser user = new RavenUser(userName);
+                    user.EnableTwoFactorAuthentication();
                     await ses.StoreAsync(user);
                     await ses.SaveChangesAsync();
                 }

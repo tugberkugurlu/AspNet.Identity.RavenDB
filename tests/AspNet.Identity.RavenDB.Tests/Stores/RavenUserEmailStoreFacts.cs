@@ -24,7 +24,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser(userName) { Email = email };
+                    RavenUser user = new RavenUser(userName, email);
                     RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
@@ -54,7 +54,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser(userName) { Email = email };
+                    RavenUser user = new RavenUser(userName, email);
                     RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
@@ -84,7 +84,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser(userName) { Email = email };
+                    RavenUser user = new RavenUser(userName, email);
                     RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
@@ -142,7 +142,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser(userName) { Email = email };
+                    RavenUser user = new RavenUser(userName, email);
                     RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     userEmail.SetConfirmed();
                     await ses.StoreAsync(user);
@@ -172,7 +172,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser(userName) { Email = email };
+                    RavenUser user = new RavenUser(userName, email);
                     RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
@@ -270,7 +270,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser(userName) { UserName = userName, Email = email };
+                    RavenUser user = new RavenUser(userName, email);
                     RavenUser user2 = new RavenUser(userName2);
                     RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     await ses.StoreAsync(user);
@@ -313,7 +313,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser(userName) { UserName = userName, Email = email };
+                    RavenUser user = new RavenUser(userName, email);
                     RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     await ses.StoreAsync(user);
                     await ses.StoreAsync(userEmail);
@@ -350,7 +350,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser(userName) { Email = email };
+                    RavenUser user = new RavenUser(userName, email);
                     RavenUserEmail userEmail = new RavenUserEmail(email, user.Id);
                     userEmail.SetConfirmed();
                     await ses.StoreAsync(user);
@@ -418,7 +418,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             {
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
-                    RavenUser user = new RavenUser(userName) { Email = email };
+                    RavenUser user = new RavenUser(userName, email);
                     await ses.StoreAsync(user);
                     await ses.SaveChangesAsync();
                 }
