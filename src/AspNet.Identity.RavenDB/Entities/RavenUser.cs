@@ -11,8 +11,8 @@ namespace AspNet.Identity.RavenDB.Entities
         {
             if (userName == null) throw new ArgumentNullException("userName");
 
+            Id = GenerateKey(userName);
             UserName = userName;
-            Id = string.Format(Constants.RavenUserKeyTemplate, UserName);
             Claims = new Collection<RavenUserClaim>();
             Logins = new Collection<RavenUserLogin>();
         }
@@ -28,7 +28,12 @@ namespace AspNet.Identity.RavenDB.Entities
         public DateTimeOffset? LockoutEndDate { get; set; }
         public bool IsTwoFactorEnabled { get; set; }
 
-        public ICollection<RavenUserClaim> Claims { get; set; }
-        public ICollection<RavenUserLogin> Logins { get; set; }
+        public ICollection<RavenUserClaim> Claims { get; private set; }
+        public ICollection<RavenUserLogin> Logins { get; private set; }
+
+        internal static string GenerateKey(string userName)
+        {
+            return string.Format(Constants.RavenUserKeyTemplate, userName);
+        }
     }
 }
