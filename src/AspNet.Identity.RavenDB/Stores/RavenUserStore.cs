@@ -235,22 +235,14 @@ namespace AspNet.Identity.RavenDB.Stores
 
         public Task<string> GetSecurityStampAsync(TUser user)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-
+            if (user == null) throw new ArgumentNullException("user");
             return Task.FromResult<string>(user.SecurityStamp);
         }
 
         public Task SetSecurityStampAsync(TUser user, string stamp)
         {
-            if (user == null)
-            {
-                throw new ArgumentNullException("user");
-            }
-
-            user.SecurityStamp = stamp;
+            if (user == null) throw new ArgumentNullException("user");
+            user.SetSecurityStamp(stamp);
             return Task.FromResult(0);
         }
 
