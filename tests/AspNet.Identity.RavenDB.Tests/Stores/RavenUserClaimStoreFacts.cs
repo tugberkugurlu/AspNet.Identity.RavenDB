@@ -23,8 +23,8 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 IUserClaimStore<RavenUser> userClaimStore = new RavenUserStore<RavenUser>(ses);
                 IEnumerable<RavenUserClaim> claims = new List<RavenUserClaim>
                 {
-                    new RavenUserClaim { ClaimType = "Scope", ClaimValue = "Read" },
-                    new RavenUserClaim { ClaimType = "Scope", ClaimValue = "Write" }
+                    new RavenUserClaim("Scope", "Read"),
+                    new RavenUserClaim("Scope", "Write")
                 };
                 RavenUser user = new RavenUser(userName);
 
