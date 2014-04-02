@@ -396,7 +396,7 @@ namespace AspNet.Identity.RavenDB.Stores
             if (user == null) throw new ArgumentNullException("user");
             if (phoneNumber == null) throw new ArgumentNullException("phoneNumber");
 
-            user.PhoneNumber = phoneNumber;
+            user.SetPhoneNumber(phoneNumber);
             RavenUserPhoneNumber ravenUserPhoneNumber = new RavenUserPhoneNumber(phoneNumber, user.Id);
 
             return _documentSession.StoreAsync(ravenUserPhoneNumber);

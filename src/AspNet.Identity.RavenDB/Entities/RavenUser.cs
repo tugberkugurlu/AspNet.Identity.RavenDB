@@ -27,7 +27,7 @@ namespace AspNet.Identity.RavenDB.Entities
         public string Id { get; private set; }
         public string UserName { get; set; }
         public string Email { get; private set; }
-        public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; private set; }
         public string PasswordHash { get; set; }
         public string SecurityStamp { get; private set; }
         public bool IsLockoutEnabled { get; set; }
@@ -52,6 +52,11 @@ namespace AspNet.Identity.RavenDB.Entities
         public virtual void SetEmail(string email)
         {
             Email = email;
+        }
+
+        public virtual void SetPhoneNumber(string phoneNumber)
+        {
+            PhoneNumber = phoneNumber;
         }
 
         public virtual void SetSecurityStamp(string securityStamp)
