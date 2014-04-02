@@ -4,8 +4,8 @@ AspNet.Identity.RavenDB
 Fully asynchronous, new and sweet ASP.NET Identity implementation for RavenDB.
 
 ## Getting Started with Version 2.0.0
-Using ASP.NET Identity RavenDB port is pretty straight forward. You can install the library through NuGet. For now, the **AspNet.Identity.RavenDB** package which 
-targets the ASP.NET Identity 2.0.0 release is pre-release. So, be sure to use the `-pre` while getting it through the NuGet:
+Using ASP.NET Identity RavenDB port is pretty straight forward. You can install the [AspNet.Identity.RavenDB](https://www.nuget.org/packages/AspNet.Identity.RavenDB) library through [NuGet](https://nuget.org). For now, the **AspNet.Identity.RavenDB** package which 
+targets the ASP.NET Identity 2.0.0 release is pre-release. So, be sure to use the `-pre` switch while getting it through NuGet:
 
     Install-Package AspNet.Identity.RavenDB -Pre
 
