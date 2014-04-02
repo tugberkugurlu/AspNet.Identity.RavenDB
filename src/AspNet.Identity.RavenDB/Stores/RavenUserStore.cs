@@ -227,7 +227,7 @@ namespace AspNet.Identity.RavenDB.Stores
                 throw new ArgumentNullException("user");
             }
 
-            user.PasswordHash = passwordHash;
+            user.SetPasswordHash(passwordHash);
             return Task.FromResult(0);
         }
 
@@ -501,7 +501,15 @@ namespace AspNet.Identity.RavenDB.Stores
                 throw new ArgumentNullException("user");
             }
 
-            user.IsLockoutEnabled = enabled;
+            if (enabled)
+            {
+                user.EnableLockout();
+            }
+            else
+            {
+                user.DisableLockout();
+            }
+
             return Task.FromResult(0);
         }
 
