@@ -19,6 +19,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
+                ses.Advanced.UseOptimisticConcurrency = true;
                 IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
                 await userStore.CreateAsync(new RavenUser(userName));
 
@@ -40,6 +41,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
+                ses.Advanced.UseOptimisticConcurrency = true;
                 IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
                 await userStore.CreateAsync(new RavenUser(userName));
 
@@ -62,6 +64,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
+                ses.Advanced.UseOptimisticConcurrency = true;
                 IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
                 await ses.StoreAsync(new RavenUser(userName));
                 await ses.SaveChangesAsync();
@@ -82,6 +85,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
+                ses.Advanced.UseOptimisticConcurrency = true;
                 IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
                 await ses.StoreAsync(new RavenUser(userName));
                 await ses.SaveChangesAsync();
@@ -101,6 +105,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
+                ses.Advanced.UseOptimisticConcurrency = true;
                 IUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
                 await ses.StoreAsync(new RavenUser(userName));
                 await ses.SaveChangesAsync();

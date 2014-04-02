@@ -18,6 +18,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
 
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
+                    ses.Advanced.UseOptimisticConcurrency = true;
                     RavenUser user = new RavenUser(userName);
                     RavenUser userToSearch = new RavenUser(userNameToSearch);
                     await ses.StoreAsync(user);
@@ -28,6 +29,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 using (IAsyncDocumentSession ses = store.OpenAsyncSession())
                 {
                     // Act
+                    ses.Advanced.UseOptimisticConcurrency = true;
                     RavenUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
                     RavenUser retrievedUser = await userStore.Users.FirstOrDefaultAsync(user => user.UserName == userNameToSearch);
 

@@ -34,7 +34,7 @@ of the username and the email. `RavenUserStore<TUser>` checks if you enabled opt
 it will throw an exception. However, optimistic concurrency can be disabled any time during the `IAsyncDocumentSession` 
 lifetime by the session provider. That's why the library cannot possibly be sure to warn 100% of the time. So, it is extremely important to 
 obey this rule and leave the optimistic concurrency enabled on the session till the end of its lifetime. Otherwise, you will have a chance of 
-ending up overriding the existing users data if a new user tries to register with the username of an existing user (which would be chaotic for you)!
+ending up overriding an existing user's data if a new user tries to register with the username of that existing user (which would be chaotic for you)!
 
  - You don't need to use `RavenUser` entity type. However, your custom entity class must be derived from `RavenUser` class.
 

@@ -20,6 +20,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
+                ses.Advanced.UseOptimisticConcurrency = true;
                 IUserClaimStore<RavenUser> userClaimStore = new RavenUserStore<RavenUser>(ses);
                 IEnumerable<RavenUserClaim> claims = new List<RavenUserClaim>
                 {
@@ -52,6 +53,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
+                ses.Advanced.UseOptimisticConcurrency = true;
                 IUserClaimStore<RavenUser> userClaimStore = new RavenUserStore<RavenUser>(ses, false);
                 RavenUser user = new RavenUser(userName);
 
@@ -74,6 +76,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = base.CreateEmbeddableStore())
             using(IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
+                ses.Advanced.UseOptimisticConcurrency = true;
                 IUserClaimStore<RavenUser> userClaimStore = new RavenUserStore<RavenUser>(ses, false);
                 RavenUser user = new RavenUser(userName);
 
@@ -98,6 +101,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using(IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
                 // Arrange
+                ses.Advanced.UseOptimisticConcurrency = true;
                 IUserClaimStore<RavenUser> userClaimStore = new RavenUserStore<RavenUser>(ses, false);
                 RavenUser user = new RavenUser(userName);
 

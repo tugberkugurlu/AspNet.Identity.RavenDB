@@ -21,6 +21,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             using (IDocumentStore store = CreateEmbeddableStore())
             using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
+                ses.Advanced.UseOptimisticConcurrency = true;
                 IUserLoginStore<RavenUser, string> userLoginStore = new RavenUserStore<RavenUser>(ses);
                 RavenUser user = new RavenUser(userName);
                 await ses.StoreAsync(user);

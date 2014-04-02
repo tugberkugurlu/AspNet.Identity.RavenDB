@@ -38,13 +38,7 @@ namespace AspNet.Identity.RavenDB.Stores
 
             if (documentSession.Advanced.UseOptimisticConcurrency == false)
             {
-                throw new NotSupportedException(
-                    @"Optimistic concurrency disabled 'IAsyncDocumentSession' instance is not supported 
-                      because the uniqueness of the username and the e-mail needs to ensured. Please enable 
-                      optimistic concurrency by setting the 'Advanced.UseOptimisticConcurrency' property on the 
-                      'IAsyncDocumentSession' instance and leave the optimistic concurrency enabled on the session 
-                      till the end of its lifetime. Otherwise, you will have a chance of ending up overriding 
-                      an existing user's data if a new user tries to register with the username of that existing user.");
+                throw new NotSupportedException("Optimistic concurrency disabled 'IAsyncDocumentSession' instance is not supported because the uniqueness of the username and the e-mail needs to ensured. Please enable optimistic concurrency by setting the 'Advanced.UseOptimisticConcurrency' property on the 'IAsyncDocumentSession' instance and leave the optimistic concurrency enabled on the session till the end of its lifetime. Otherwise, you will have a chance of ending up overriding an existing user's data if a new user tries to register with the username of that existing user.");
             }
 
             _documentSession = documentSession;
