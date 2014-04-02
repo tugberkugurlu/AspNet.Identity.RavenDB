@@ -29,12 +29,12 @@ The following code snippet shows the easiest way to stand up the `UserManager<TU
 Couple of things to note here:
 
  - You MUST set the `UseOptimisticConcurrency` flag to `true` on the `IAsyncDocumentSession` as shown above 
-and leave it enabled at the end of the `IAsyncDocumentSession` lifetime because we need to ensure the uniqueness 
-of the username and the email. The library check if you enabled optimistic concurrency or not and if you didn't, 
+and leave it enabled till the end of the `IAsyncDocumentSession` lifetime because we need to ensure the uniqueness 
+of the username and the email. `RavenUserStore<TUser>` checks if you enabled optimistic concurrency or not on its constructor. If you didn't, 
 it will throw an exception. However, optimistic concurrency can be disabled any time during the `IAsyncDocumentSession` 
-lifetime. That's why the library cannot possibly be sure to warn 100% of the time. So, it is extremely important to 
-obey this rule. Otherwise, you will have a chance of ending up overriding the existing users data if a new user tries 
-to register with the username of an existing user.
+lifetime by the session provider. That's why the library cannot possibly be sure to warn 100% of the time. So, it is extremely important to 
+obey this rule and leave the optimistic concurrency enabled on the session till the end of its lifetime. Otherwise, you will have a chance of 
+ending up overriding the existing users data if a new user tries to register with the username of an existing user (which would be chaotic for you)!
 
  - You don't need to use `RavenUser` entity type. However, your custom entity class must be derived from `RavenUser` class.
 
