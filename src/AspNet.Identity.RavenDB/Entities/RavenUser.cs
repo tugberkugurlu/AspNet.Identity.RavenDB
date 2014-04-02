@@ -38,7 +38,7 @@ namespace AspNet.Identity.RavenDB.Entities
         public bool IsTwoFactorEnabled { get; private set; }
 
         public int AccessFailedCount { get; private set; }
-        public DateTimeOffset? LockoutEndDate { get; set; }
+        public DateTimeOffset? LockoutEndDate { get; private set; }
 
         public IEnumerable<RavenUserClaim> Claims
         {
@@ -123,6 +123,11 @@ namespace AspNet.Identity.RavenDB.Entities
         public virtual void ResetAccessFailedCount()
         {
             AccessFailedCount = 0;
+        }
+
+        public virtual void LockUntil(DateTimeOffset lockoutEndDate)
+        {
+            LockoutEndDate = lockoutEndDate;
         }
 
         public virtual void AddClaim(Claim claim)

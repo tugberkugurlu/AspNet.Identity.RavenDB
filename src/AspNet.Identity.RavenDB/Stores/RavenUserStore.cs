@@ -447,7 +447,7 @@ namespace AspNet.Identity.RavenDB.Stores
                 throw new ArgumentNullException("user");
             }
 
-            user.LockoutEndDate = lockoutEnd;
+            user.LockUntil(lockoutEnd);
             return Task.FromResult(0);
         }
 
