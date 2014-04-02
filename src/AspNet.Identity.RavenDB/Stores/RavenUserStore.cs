@@ -139,7 +139,7 @@ namespace AspNet.Identity.RavenDB.Stores
 
             RavenUserLogin ravenUserLogin = new RavenUserLogin(user.Id, login);
             await _documentSession.StoreAsync(ravenUserLogin).ConfigureAwait(false);
-            user.Logins.Add(ravenUserLogin);
+            user.AddLogin(ravenUserLogin);
         }
 
         public async Task RemoveLoginAsync(TUser user, UserLoginInfo login)
@@ -157,7 +157,7 @@ namespace AspNet.Identity.RavenDB.Stores
             RavenUserLogin userLogin = user.Logins.FirstOrDefault(lgn => lgn.Id.Equals(keyToLookFor, StringComparison.InvariantCultureIgnoreCase));
             if (userLogin != null)
             {
-                user.Logins.Remove(userLogin);
+                user.RemoveLogin(userLogin);
             }
         }
 
@@ -178,7 +178,7 @@ namespace AspNet.Identity.RavenDB.Stores
             if (user == null) throw new ArgumentNullException("user");
             if (claim == null) throw new ArgumentNullException("claim");
 
-            user.Claims.Add(new RavenUserClaim(claim));
+            user.AddClaim(claim);
             return Task.FromResult(0);
         }
 
@@ -192,7 +192,7 @@ namespace AspNet.Identity.RavenDB.Stores
 
             if (userClaim != null)
             {
-                user.Claims.Remove(userClaim);
+                user.RemoveClaim(userClaim);
             }
 
             return Task.FromResult(0);

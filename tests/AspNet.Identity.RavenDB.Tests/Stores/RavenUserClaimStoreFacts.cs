@@ -30,7 +30,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
 
                 foreach (var claim in claims)
                 {
-                    user.Claims.Add(claim);
+                    user.AddClaim(claim);
                 }
 
                 await ses.StoreAsync(user);
@@ -83,7 +83,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 Claim claimToAdd = new Claim(ClaimTypes.Role, "Customer");
                 await userClaimStore.AddClaimAsync(user, claimToAdd);
 
-                Assert.Equal(1, user.Claims.Count);
+                Assert.Equal(1, user.Claims.Count());
                 Assert.Equal(claimToAdd.Value, user.Claims.FirstOrDefault().ClaimValue);
                 Assert.Equal(claimToAdd.Type, user.Claims.FirstOrDefault().ClaimType);
             }
@@ -102,7 +102,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 RavenUser user = new RavenUser(userName);
 
                 Claim claimToAddAndRemove = new Claim(ClaimTypes.Role, "Customer");
-                user.Claims.Add(new RavenUserClaim(claimToAddAndRemove));
+                user.AddClaim(new RavenUserClaim(claimToAddAndRemove));
 
                 await ses.StoreAsync(user);
                 await ses.SaveChangesAsync();
@@ -111,7 +111,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 await userClaimStore.RemoveClaimAsync(user, claimToAddAndRemove);
 
                 // Assert
-                Assert.Equal(0, user.Claims.Count);
+                Assert.Equal(0, user.Claims.Count());
             }
         }
     }

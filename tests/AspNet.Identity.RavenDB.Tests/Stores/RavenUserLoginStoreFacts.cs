@@ -31,7 +31,7 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
                 await userLoginStore.AddLoginAsync(user, new UserLoginInfo("Local", userName));
 
                 // Assert
-                Assert.Equal(1, user.Logins.Count);
+                Assert.Equal(1, user.Logins.Count());
             }
         }
     }

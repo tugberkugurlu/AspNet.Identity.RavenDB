@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Security.Claims;
 using Microsoft.AspNet.Identity;
 using Raven.Imports.Newtonsoft.Json;
 
@@ -8,6 +9,9 @@ namespace AspNet.Identity.RavenDB.Entities
 {
     public class RavenUser : IUser
     {
+        private List<RavenUserClaim> _claims;
+        private List<RavenUserLogin> _logins;
+
         [JsonConstructor]
         public RavenUser(string userName)
         {
@@ -15,8 +19,8 @@ namespace AspNet.Identity.RavenDB.Entities
 
             Id = GenerateKey(userName);
             UserName = userName;
-            Claims = new Collection<RavenUserClaim>();
-            Logins = new Collection<RavenUserLogin>();
+            _claims = new List<RavenUserClaim>();
+            _logins = new List<RavenUserLogin>();
         }
 
         public RavenUser(string userName, string email) : this(userName)
@@ -36,8 +40,40 @@ namespace AspNet.Identity.RavenDB.Entities
         public int AccessFailedCount { get; set; }
         public DateTimeOffset? LockoutEndDate { get; set; }
 
-        public ICollection<RavenUserClaim> Claims { get; private set; }
-        public ICollection<RavenUserLogin> Logins { get; private set; }
+        public IEnumerable<RavenUserClaim> Claims
+        {
+            get
+            {
+                return _claims;
+            }
+
+            private set
+            {
+                if (_claims == null)
+                {
+                    _claims = new List<RavenUserClaim>();
+                }
+
+                _claims.AddRange(value);
+            }
+        }
+        public IEnumerable<RavenUserLogin> Logins
+        {
+            get
+            {
+                return _logins;
+            }
+
+            private set
+            {
+                if (_logins == null)
+                {
+                    _logins = new List<RavenUserLogin>();
+                }
+
+                _logins.AddRange(value);
+            }
+        }
 
         public virtual void EnableTwoFactorAuthentication()
         {
@@ -77,6 +113,56 @@ namespace AspNet.Identity.RavenDB.Entities
         public virtual void SetSecurityStamp(string securityStamp)
         {
             SecurityStamp = securityStamp;
+        }
+
+        public virtual void AddClaim(Claim claim)
+        {
+            if (claim == null)
+            {
+                throw new ArgumentNullException("claim");
+            }
+
+            AddClaim(new RavenUserClaim(claim));
+        }
+
+        public virtual void AddClaim(RavenUserClaim ravenUserClaim)
+        {
+            if (ravenUserClaim == null)
+            {
+                throw new ArgumentNullException("ravenUserClaim");
+            }
+
+            _claims.Add(ravenUserClaim);
+        }
+
+        public virtual void RemoveClaim(RavenUserClaim ravenUserClaim)
+        {
+            if (ravenUserClaim == null)
+            {
+                throw new ArgumentNullException("ravenUserClaim");
+            }
+
+            _claims.Remove(ravenUserClaim);
+        }
+
+        public virtual void AddLogin(RavenUserLogin ravenUserLogin)
+        {
+            if (ravenUserLogin == null)
+            {
+                throw new ArgumentNullException("ravenUserLogin");
+            }
+
+            _logins.Add(ravenUserLogin);
+        }
+
+        public virtual void RemoveLogin(RavenUserLogin ravenUserLogin)
+        {
+            if (ravenUserLogin == null)
+            {
+                throw new ArgumentNullException("ravenUserLogin");
+            }
+
+            _logins.Remove(ravenUserLogin);
         }
 
         // statics
