@@ -37,7 +37,7 @@ namespace AspNet.Identity.RavenDB.Entities
         public bool IsLockoutEnabled { get; private set; }
         public bool IsTwoFactorEnabled { get; private set; }
 
-        public int AccessFailedCount { get; set; }
+        public int AccessFailedCount { get; private set; }
         public DateTimeOffset? LockoutEndDate { get; set; }
 
         public IEnumerable<RavenUserClaim> Claims
@@ -113,6 +113,16 @@ namespace AspNet.Identity.RavenDB.Entities
         public virtual void SetSecurityStamp(string securityStamp)
         {
             SecurityStamp = securityStamp;
+        }
+
+        public virtual void IncrementAccessFailedCount()
+        {
+            AccessFailedCount++;
+        }
+
+        public virtual void ResetAccessFailedCount()
+        {
+            AccessFailedCount = 0;
         }
 
         public virtual void AddClaim(Claim claim)

@@ -459,7 +459,7 @@ namespace AspNet.Identity.RavenDB.Stores
             }
 
             // NOTE: Not confortable to do this like below but this will work out for the intended scenario.
-            user.AccessFailedCount++;
+            user.IncrementAccessFailedCount();
             return Task.FromResult(0);
         }
 
@@ -470,7 +470,7 @@ namespace AspNet.Identity.RavenDB.Stores
                 throw new ArgumentNullException("user");
             }
 
-            user.AccessFailedCount = 0;
+            user.ResetAccessFailedCount();
             return Task.FromResult(0);
         }
 
