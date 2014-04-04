@@ -18,30 +18,38 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
             string userName = "Tugberk";
 
             using (IDocumentStore store = CreateEmbeddableStore())
-            using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                ses.Advanced.UseOptimisticConcurrency = true;
-                IUserClaimStore<RavenUser> userClaimStore = new RavenUserStore<RavenUser>(ses);
+                RavenUser user = new RavenUser(userName);
                 IEnumerable<RavenUserClaim> claims = new List<RavenUserClaim>
                 {
                     new RavenUserClaim("Scope", "Read"),
                     new RavenUserClaim("Scope", "Write")
                 };
-                RavenUser user = new RavenUser(userName);
 
-                foreach (var claim in claims)
+                foreach (RavenUserClaim claim in claims)
                 {
                     user.AddClaim(claim);
                 }
 
-                await ses.StoreAsync(user);
-                await ses.SaveChangesAsync();
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    ses.Advanced.UseOptimisticConcurrency = true;
+                    IUserClaimStore<RavenUser> userClaimStore = new RavenUserStore<RavenUser>(ses);
 
-                IEnumerable<Claim> retrievedClaims = await userClaimStore.GetClaimsAsync(user);
+                    await ses.StoreAsync(user);
+                    await ses.SaveChangesAsync();
+                }
 
-                Assert.Equal(2, claims.Count());
-                Assert.Equal("Read", claims.ElementAt(0).ClaimValue);
-                Assert.Equal("Write", claims.ElementAt(1).ClaimValue);
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    ses.Advanced.UseOptimisticConcurrency = true;
+                    IUserClaimStore<RavenUser> userClaimStore = new RavenUserStore<RavenUser>(ses);
+                    IEnumerable<Claim> retrievedClaims = await userClaimStore.GetClaimsAsync(user);
+
+                    Assert.Equal(2, claims.Count());
+                    Assert.Equal("Read", claims.ElementAt(0).ClaimValue);
+                    Assert.Equal("Write", claims.ElementAt(1).ClaimValue);
+                }
             }
         }
 

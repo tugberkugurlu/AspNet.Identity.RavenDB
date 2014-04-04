@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
+using Raven.Imports.Newtonsoft.Json;
 
 namespace AspNet.Identity.RavenDB.Entities
 {
@@ -13,6 +14,7 @@ namespace AspNet.Identity.RavenDB.Entities
             ClaimValue = claim.Value;
         }
 
+        [JsonConstructor]
         public RavenUserClaim(string claimType, string claimValue)
         {
             if (claimType == null) throw new ArgumentNullException("claimType");
