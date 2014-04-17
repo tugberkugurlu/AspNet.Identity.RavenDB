@@ -16,23 +16,75 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         [Fact]
         public async Task Add_Should_Add_New_Login_If_User_Exists()
         {
-            string userName = "Tugberk";
+            const string userName = "Tugberk";
+            const string loginProvider = "Twitter";
+            const string providerKey = "12345678";
 
             using (IDocumentStore store = CreateEmbeddableStore())
-            using (IAsyncDocumentSession ses = store.OpenAsyncSession())
             {
-                ses.Advanced.UseOptimisticConcurrency = true;
-                IUserLoginStore<RavenUser, string> userLoginStore = new RavenUserStore<RavenUser>(ses);
-                RavenUser user = new RavenUser(userName);
-                await ses.StoreAsync(user);
-                await ses.SaveChangesAsync();
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    ses.Advanced.UseOptimisticConcurrency = true;
+                    IUserLoginStore<RavenUser, string> userLoginStore = new RavenUserStore<RavenUser>(ses);
+                    RavenUser user = new RavenUser(userName);
+                    await ses.StoreAsync(user);
+                    await ses.SaveChangesAsync();
+                }
 
-                // Act
-                UserLoginInfo loginToAdd = new UserLoginInfo("Local", userName);
-                await userLoginStore.AddLoginAsync(user, new UserLoginInfo("Local", userName));
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    ses.Advanced.UseOptimisticConcurrency = true;
+                    IUserLoginStore<RavenUser, string> userLoginStore = new RavenUserStore<RavenUser>(ses);
+                    RavenUser user = await ses.LoadAsync<RavenUser>(RavenUser.GenerateKey(userName));
 
-                // Assert
-                Assert.Equal(1, user.Logins.Count());
+                    // Act
+                    UserLoginInfo loginToAdd = new UserLoginInfo(loginProvider, providerKey);
+                    await userLoginStore.AddLoginAsync(user, loginToAdd);
+                    await ses.SaveChangesAsync();
+
+                    // Assert
+                    RavenUserLogin foundLogin = await ses.LoadAsync<RavenUserLogin>(RavenUserLogin.GenerateKey(loginProvider, providerKey));
+                    Assert.Equal(1, user.Logins.Count());
+                    Assert.NotNull(foundLogin);
+                }
+            }
+        }
+
+        [Fact]
+        public async Task FindAsync_Should_Find_The_User_If_Login_Exists()
+        {
+            const string userName = "Tugberk";
+            const string loginProvider = "Twitter";
+            const string providerKey = "12345678";
+
+            using (IDocumentStore store = CreateEmbeddableStore())
+            {
+                // Arrange
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    ses.Advanced.UseOptimisticConcurrency = true;
+                    IUserLoginStore<RavenUser, string> userLoginStore = new RavenUserStore<RavenUser>(ses);
+                    RavenUser user = new RavenUser(userName);
+                    RavenUserLogin userLogin = new RavenUserLogin(user.Id, new UserLoginInfo(loginProvider, providerKey));
+                    user.AddLogin(userLogin);
+                    await ses.StoreAsync(user);
+                    await ses.StoreAsync(userLogin);
+                    await ses.SaveChangesAsync();
+                }
+
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    ses.Advanced.UseOptimisticConcurrency = true;
+                    IUserLoginStore<RavenUser, string> userLoginStore = new RavenUserStore<RavenUser>(ses);
+
+                    // Act
+                    UserLoginInfo loginInfo = new UserLoginInfo(loginProvider, providerKey);
+                    RavenUser foundUser = await userLoginStore.FindAsync(loginInfo);
+
+                    // Assert
+                    Assert.NotNull(foundUser);
+                    Assert.Equal(userName, foundUser.UserName);
+                }
             }
         }
     }

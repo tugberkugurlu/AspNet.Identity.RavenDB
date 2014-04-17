@@ -1,10 +1,17 @@
 ﻿using Microsoft.AspNet.Identity;
+using Raven.Imports.Newtonsoft.Json;
 using System;
 
 namespace AspNet.Identity.RavenDB.Entities
 {
     public class RavenUserLogin
     {
+        [JsonConstructor]
+        public RavenUserLogin(string userId, string loginProvider, string providerKey)
+            : this(userId, new UserLoginInfo(loginProvider, providerKey))
+        {
+        }
+
         public RavenUserLogin(string userId, UserLoginInfo loginInfo)
         {
             if (userId == null) throw new ArgumentNullException("userId");
