@@ -466,9 +466,10 @@ namespace AspNet.Identity.RavenDB.Stores
                 throw new ArgumentNullException("user");
             }
 
-            // NOTE: Not confortable to do this like below but this will work out for the intended scenario.
+            // NOTE: Not confortable to do this like below but this will work out for the intended scenario
+            //       + RavenDB doesn't have a reliable solution for $inc update as MongoDB does.
             user.IncrementAccessFailedCount();
-            return Task.FromResult(0);
+            return Task.FromResult(user.AccessFailedCount);
         }
 
         public Task ResetAccessFailedCountAsync(TUser user)
