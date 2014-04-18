@@ -51,6 +51,42 @@ namespace AspNet.Identity.RavenDB.Tests.Stores
         }
 
         [Fact]
+        public async Task Add_Should_Add_New_Login_Just_After_UserManager_CreateAsync_Get_Called()
+        {
+            const string userName = "Tugberk";
+            const string loginProvider = "Twitter";
+            const string providerKey = "12345678";
+
+            using (IDocumentStore store = CreateEmbeddableStore())
+            {
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    ses.Advanced.UseOptimisticConcurrency = true;
+                    RavenUserStore<RavenUser> userStore = new RavenUserStore<RavenUser>(ses);
+                    UserManager<RavenUser> userManager = new UserManager<RavenUser>(userStore);
+
+                    RavenUser user = new RavenUser(userName);
+                    UserLoginInfo loginToAdd = new UserLoginInfo(loginProvider, providerKey);
+                    await userManager.CreateAsync(user);
+                    await userManager.AddLoginAsync(user.Id, loginToAdd);
+                    await ses.SaveChangesAsync();
+                }
+
+                using (IAsyncDocumentSession ses = store.OpenAsyncSession())
+                {
+                    ses.Advanced.UseOptimisticConcurrency = true;
+                    IUserLoginStore<RavenUser, string> userLoginStore = new RavenUserStore<RavenUser>(ses);
+                    RavenUser user = await ses.LoadAsync<RavenUser>(RavenUser.GenerateKey(userName));
+                    RavenUserLogin foundLogin = await ses.LoadAsync<RavenUserLogin>(RavenUserLogin.GenerateKey(loginProvider, providerKey));
+
+                    // Assert
+                    Assert.Equal(1, user.Logins.Count());
+                    Assert.NotNull(foundLogin);
+                }
+            }
+        }
+
+        [Fact]
         public async Task FindAsync_Should_Find_The_User_If_Login_Exists()
         {
             const string userName = "Tugberk";
