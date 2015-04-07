@@ -11,20 +11,22 @@ targets the ASP.NET Identity 2.0.0 release is pre-release. So, be sure to use th
 
 The following code snippet shows the easiest way to stand up the `UserManager<TUser>` class with `RavenUserStore<TUser>`:
 
-    IDocumentStore documentStore = new DocumentStore
-    {
-        Url = "http://localhost:8080",
-        DefaultDatabase = "AspNetIdentity"
-    }.Initialize();
+```csharp
+IDocumentStore documentStore = new DocumentStore
+{
+    Url = "http://localhost:8080",
+    DefaultDatabase = "AspNetIdentity"
+}.Initialize();
 
-    using (IAsyncDocumentSession session = documentStore.OpenAsyncSession())
-    {
-        session.Advanced.UseOptimisticConcurrency = true;
-        RavenUserStore<RavenUser> ravenUserStore = new RavenUserStore<RavenUser>(session);
-        UserManager<RavenUser> userManager = new UserManager<RavenUser>(ravenUserStore);
+using (IAsyncDocumentSession session = documentStore.OpenAsyncSession())
+{
+    session.Advanced.UseOptimisticConcurrency = true;
+    RavenUserStore<RavenUser> ravenUserStore = new RavenUserStore<RavenUser>(session);
+    UserManager<RavenUser> userManager = new UserManager<RavenUser>(ravenUserStore);
 
-        // UserManager<RavenUser> is ready to use!
-    }
+    // UserManager<RavenUser> is ready to use!
+}
+```
 
 Couple of things to note here:
 
